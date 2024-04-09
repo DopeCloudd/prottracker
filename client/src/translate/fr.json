@@ -1,0 +1,71 @@
+{
+  "home": {
+    "main-text": "COMPARE LA <span>QUALITE</span> DE TA NUTRITION ET TROUVE LA AU MEILLEUR <span>PRIX</span>",
+    "first-text": "Nous sommes ton assitant nutrition qui compare et analyse ce dont tu as besoin!",
+    "second-text": "Nous t'aidons à choisir tes compléments qui te correspondent le mieux et nous scorons chacun de ces produits.",
+    "questions": "Comment notre score est déterminé ?",
+    "third-text": "Nous analysons la composition des ingrédients et des macronutriments de chacun des produits pour t'offrir les meilleurs produits et ce dont tu as besoin.",
+    "button": "COMPARER"
+  },
+  "copyright": {
+    "rights": "Tous droits réservés.",
+    "terms": "Mentions légales."
+  },
+  "filtres": {
+    "titre": "Choisit ton produit",
+    "whey": "Apport de protéines pour votre alimentation.",
+    "creatine": "Accrois tes performances et ton gain musculaire.",
+    "preworkout": "Boosteur d'énergie et d'endurance pour vos séances les plus intenses.",
+    "vitamines": "Booster vos défenses et vos muscles avec de bonnes vitamines.",
+    "translated-text": "This is english"
+  },
+  "main": {
+    "back": "Retour"
+  },
+  "product": {
+    "button": "ACHETER"
+  },
+  "Whey": {
+    "title": "Whey",
+    "description": "Apport de protéines pour votre alimentation."
+  },
+  "Clear Whey": {
+    "title": "Clear Whey",
+    "description": "Apport de protéines pour votre alimentation."
+  },
+  "Gainer": {
+    "title": "Gainer",
+    "description": "Le meilleur allié de vos prises de masse."
+  },
+  "Creatine": {
+    "title": "Creatine",
+    "description": "Accrois tes performances et ton gain musculaire."
+  },
+  "Pre-workout": {
+    "title": "Pre-workout",
+    "description": "Boosteur d'énergie et d'endurance pour vos séances les plus intenses."
+  },
+  "Vitamines": {
+    "title": "Vitamines",
+    "description": "Booster vos défenses et vos muscles avec de bonnes vitamines."
+  },
+  "login": {
+    "title": "Connexion",
+    "email": "Adresse Email",
+    "password": "Mot de Passe",
+    "button": "Se connecter",
+    "register": "Pas de compte ? Inscription",
+    "forgotten": "Mot de passe oublié ?"
+  },
+  "register": {
+    "title": "Inscription",
+    "name": "Nom",
+    "surname": "Prénom",
+    "email": "Adresse Email",
+    "password": "Mot de Passe",
+    "confirm": "Confirmation du mot de passe",
+    "terms": "J'accepte les conditions d'utilisation",
+    "button": "S'inscrire",
+    "account": "Déjà un compte ? Connexion"
+  }
+}

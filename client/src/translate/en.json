@@ -1,0 +1,71 @@
+{
+  "home": {
+    "main-text": "COMPARE THE <span>QUALITY</span> OF YOUR NUTRITION AND FIND IT AT THE BEST <span>PRICE</span>",
+    "first-text": "We're your nutrition assistant, comparing and analyzing what you need!",
+    "second-text": "We help you choose the supplements that best suit you and we analyze each product for you using our score.",
+    "questions": "How do we rate products?",
+    "third-text": "We analyze the composition of the ingredients and macronutrients in each product to offer you quality products for your body and your needs.",
+    "button": "START COMPARING"
+  },
+  "copyright": {
+    "rights": "All rights reserved.",
+    "terms": "Terms of use."
+  },
+  "filtres": {
+    "titre": "Choose your product",
+    "whey": "Protein intake for your diet.",
+    "creatine": "Increase your performance and muscle gain.",
+    "preworkout": "Energy and endurance booster for your most intense sessions.",
+    "vitamines": "Boost your defenses and your muscles with good vitamins.",
+    "translated-text": "This is english"
+  },
+  "main": {
+    "back": "Back"
+  },
+  "product": {
+    "button": "BUY"
+  },
+  "Whey": {
+    "title": "Whey",
+    "description": "Protein for your diet."
+  },
+  "Clear Whey": {
+    "title": "Clear Whey",
+    "description": "Protein for your diet."
+  },
+  "Gainer": {
+    "title": "Gainer",
+    "description": "The best ally for weight gain."
+  },
+  "Creatine": {
+    "title": "Creatine",
+    "description": "Boost your performance and muscle gain."
+  },
+  "Pre-workout": {
+    "title": "Pre-workout",
+    "description": "Energy and endurance booster for your most intense sessions."
+  },
+  "Vitamines": {
+    "title": "Vitamines",
+    "description": "Boost your defences and muscles with good vitamins."
+  },
+  "login": {
+    "title": "Sign in",
+    "email": "Email Address",
+    "password": "Password",
+    "button": "Sign in",
+    "register": "Don't have an account? Register",
+    "forgotten": "Forgot your password?"
+  },
+  "register": {
+    "title": "Sign up",
+    "name": "Name",
+    "surname": "Surname",
+    "email": "Email Address",
+    "password": "Password",
+    "confirm": "Confirm password",
+    "terms": "I accept the terms of use",
+    "button": "Sign up",
+    "account": "Already have an account? Login"
+  }
+}

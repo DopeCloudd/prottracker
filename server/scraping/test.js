@@ -1,10 +1,10 @@
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const bulk_pages = require('./bulk_pages');
+const bulk_pages = require('./bulk/bulk_pages');
 
 puppeteer.use(StealthPlugin());
 
-async function bulkScraping() {
+async function test() {
 
     const buttonCookies = '#amgdprcookie-accept-btn';
 
@@ -80,6 +80,7 @@ async function bulkScraping() {
         );
 
         await browser.close();
+        console.log(pagesData);
         return pagesData;
 
     } catch (error) {
@@ -87,5 +88,4 @@ async function bulkScraping() {
     }
 }
 
-// Exporting the function, not its result
-module.exports = bulkScraping;
+test();

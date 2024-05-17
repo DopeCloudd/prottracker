@@ -1,4 +1,4 @@
-const db = require("../../db/models");
+const db = require("../db/models");
 const config = require("../config/auth.config");
 const User = db.user;
 
@@ -9,9 +9,9 @@ const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const ejs = require('ejs');
-const creds = require('../../mail/credentials.json');
+const creds = require('../mail/credentials.json');
 // Lire le fichier HTML
-const htmlContent = fs.readFileSync('./template/verifMail.html', 'utf8');
+const htmlContent = fs.readFileSync('./mail/template/verifMail.html', 'utf8');
 
 let transporter = nodemailer.createTransport({
     host: "ssl0.ovh.net",

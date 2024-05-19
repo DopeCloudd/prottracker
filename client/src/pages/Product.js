@@ -4,7 +4,9 @@ import styled from "styled-components";
 import {useTranslation} from "react-i18next";
 import {useNavigate, useParams} from 'react-router-dom';
 import axios from 'axios';
-import {Box, Rating, Skeleton} from '@mui/material';
+import {Box, Rating, Skeleton, Typography} from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const ProductWrapper = styled.div`
     width: 60%;
@@ -113,6 +115,10 @@ const convertirUint8ArrayEnUrl = (uint8Array) => {
     const blob = new Blob([uint8Array], {type: 'image/jpeg'});
     const url = URL.createObjectURL(blob);
     return url;
+};
+
+const removeAccents = (str) => {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 };
 
 function Product() {
@@ -225,59 +231,92 @@ function Product() {
                     </>
                 ) : (
                     // Display product information
-                    <>
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            gridTemplateColumns: '50% 1fr',
+                            gridTemplateRows: '1fr',
+                            gridColumnGap: '0px',
+                            gridRowGap: '0px',
+                            marginBottom: '60px',
+                        }}
+                    >
                         <Box
                             sx={{
-                                display: 'grid',
-                                gridTemplateColumns: '50% 1fr',
-                                gridTemplateRows: '1fr',
-                                gridColumnGap: '0px',
-                                gridRowGap: '0px',
+                                '& img': {
+                                    aspectRatio: '4/4',
+                                    width: '100%',
+                                }
                             }}
                         >
+                            <img
+                                src={convertirUint8ArrayEnUrl(new Uint8Array(product.image.data))}
+                                alt={`Image de ${product.title}`}
+                            />
+                        </Box>
+                        <Box>
                             <Box
                                 sx={{
-                                    '& img': {
-                                        aspectRatio: '4/4',
-                                        width: '100%',
-                                    }
+                                    width: '100%',
+                                    display: 'flex',
+                                    justifyContent: 'flex-end',
                                 }}
                             >
-                                <img
-                                    src={convertirUint8ArrayEnUrl(new Uint8Array(product.image.data))}
-                                    alt={`Image de ${product.title}`}
+                                <NotificationsIcon
+                                    sx={{
+                                        marginRight: '8px',
+                                        padding: '10px',
+                                        backgroundColor: '#171717',
+                                        border: '1px solid',
+                                        borderRadius: '6px',
+                                        borderColor: '#00A656',
+                                        cursor: 'pointer',
+                                        fontSize: '2rem',
+                                    }}
+                                />
+                                <FavoriteIcon
+                                    sx={{
+                                        padding: '10px',
+                                        backgroundColor: '#171717',
+                                        border: '1px solid',
+                                        borderRadius: '6px',
+                                        borderColor: '#00A656',
+                                        cursor: 'pointer',
+                                        fontSize: '2rem',
+                                    }}
                                 />
                             </Box>
-                            <Box
+                            <Typography
+                                variant="h1"
+                                component="h1"
                                 sx={{
-                                    padding: 2,
-                                    backgroundColor: '#171717',
-                                    borderRadius: '10px',
+                                    fontFamily: 'Integral Oblique, sans-serif',
+                                    fontSize: '2rem'
                                 }}
                             >
-                                <h1>{product.title}</h1>
-                                <Rating name="read-only" value={4.5} precision={0.5} readOnly/>
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        alignItems: 'end'
-                                    }}
-                                >
-                                    <Prix prix={product.currentPrice}/>
-                                    <TextLowOpacity>{product.quantity}</TextLowOpacity>
-                                </Box>
-                                <TextLowOpacity>Vendu par {product.brand}</TextLowOpacity>
-                                <TextLowOpacity>Prix le plus bas : {product.lowestPrice} €</TextLowOpacity>
-                                <BuyButton onClick={() => goToUrl(product.url)}>{t('product.button')}</BuyButton>
-                                <TitleSection>Analyse</TitleSection>
-                                <TextDescription>
-                                    Notre analyse de la composition de ce produit a pu mettre en avant que ...
-                                </TextDescription>
-                                <TitleSection>Description</TitleSection>
-                                <TextDescription>{product.description}</TextDescription>
+                                {removeAccents(product.title)}
+                            </Typography>
+                            <Rating name="read-only" value={4.5} precision={0.5} readOnly/>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'end'
+                                }}
+                            >
+                                <Prix prix={product.currentPrice}/>
+                                <TextLowOpacity>{product.quantity}</TextLowOpacity>
                             </Box>
+                            <TextLowOpacity>Vendu par {product.brand}</TextLowOpacity>
+                            <TextLowOpacity>Prix le plus bas : {product.lowestPrice} €</TextLowOpacity>
+                            <BuyButton onClick={() => goToUrl(product.url)}>{t('product.button')}</BuyButton>
+                            <TitleSection>Analyse</TitleSection>
+                            <TextDescription>
+                                Notre analyse de la composition de ce produit a pu mettre en avant que ...
+                            </TextDescription>
+                            <TitleSection>Description</TitleSection>
+                            <TextDescription>{product.description}</TextDescription>
                         </Box>
-                    </>
+                    </Box>
                 )
             )}
         </Box>

@@ -1,38 +1,38 @@
 import styled from "styled-components";
 import * as React from "react";
-import { useNavigate, Navigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import {useNavigate, Navigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
+import {useForm, Controller} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from "@mui/material/Typography";
-import { CircularProgress, Grid } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { register } from "../actions/auth";
-import { useState } from "react";
+import {CircularProgress, Grid} from "@mui/material";
+import {useDispatch, useSelector} from "react-redux";
+import {register} from "../actions/auth";
+import {useState} from "react";
 
 const Container = styled.div`
-  min-height: calc(100% - 100px);
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    min-height: calc(100% - 100px);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 `;
 
 const Wrapper = styled.div`
-  width: 50%;
-  display: flex;
-  /*flex-direction: column;
-  align-items: center;
-  justify-content: center;*/
-  padding: 60px 40px;
-  background-color: #171717;
-  box-shadow: 0px 0px 15px 2px #0c0c0c;
-  border-radius: 10px;
+    width: 50%;
+    display: flex;
+    /*flex-direction: column;
+    align-items: center;
+    justify-content: center;*/
+    padding: 60px 40px;
+    background-color: #171717;
+    box-shadow: 0px 0px 15px 2px #0c0c0c;
+    border-radius: 10px;
 `;
 
 function Profile() {
@@ -40,6 +40,9 @@ function Profile() {
     const [loading, setLoading] = useState(false);
     // For navigation
     const navigate = useNavigate();
+    // Use dispatch
+    const dispatch = useDispatch();
+
     // Yup validation scheme for email, password, firstname, lastname, terms fields
     const schema = yup.object({
         firstName: yup.string().required('Le prénom est requis'),
@@ -50,13 +53,13 @@ function Profile() {
         acceptTerms: yup.bool().oneOf([true], 'Vous devez accepter les conditions pour continuer'),
     }).required();
     // Initializing react-hook-form with yupResolver and the yup schema
-    const { control, handleSubmit, formState: { errors } } = useForm({
+    const {control, handleSubmit, formState: {errors}} = useForm({
         resolver: yupResolver(schema),
     });
-    // Use dispatch
-    const dispatch = useDispatch();
+
     // Function to be executed on form submission
     const onSubmit = data => {
+        setLoading(true);
         dispatch(register(data.lastName, data.firstName, data.email, data.password))
             .then(() => {
                 navigate("/login");
@@ -66,13 +69,12 @@ function Profile() {
                 setLoading(false);
             });
     };
+
     // Get current user data
-    const { user: currentUser } = useSelector((state) => state.auth);
-    // if user is logged in
-    const { isLoggedIn } = useSelector(state => state.auth);
+    const {user: currentUser, isLoggedIn} = useSelector((state) => state.auth);
 
     if (!isLoggedIn) {
-        return <Navigate to="/" />;
+        return <Navigate to="/"/>;
     }
 
     return (
@@ -88,8 +90,8 @@ function Profile() {
                                 <Controller
                                     name="firstName"
                                     control={control}
-                                    defaultValue={currentUser.firstName}
-                                    render={({ field }) => <TextField
+                                    defaultValue={currentUser?.firstName || ''}
+                                    render={({field}) => <TextField
                                         {...field}
                                         margin="normal"
                                         required
@@ -97,7 +99,7 @@ function Profile() {
                                         label="Prénom"
                                         autoComplete="given-name"
                                         autoFocus
-                                        color="green"
+                                        color="primary"
                                         error={!!errors.firstName}
                                         helperText={errors.firstName ? errors.firstName.message : ''}
                                     />}
@@ -107,15 +109,15 @@ function Profile() {
                                 <Controller
                                     name="lastName"
                                     control={control}
-                                    defaultValue={currentUser.name}
-                                    render={({ field }) => <TextField
+                                    defaultValue={currentUser?.lastName || ''}
+                                    render={({field}) => <TextField
                                         {...field}
                                         margin="normal"
                                         required
                                         fullWidth
                                         label="Nom"
                                         autoComplete="family-name"
-                                        color="green"
+                                        color="primary"
                                         error={!!errors.lastName}
                                         helperText={errors.lastName ? errors.lastName.message : ''}
                                     />}
@@ -125,16 +127,15 @@ function Profile() {
                                 <Controller
                                     name="email"
                                     control={control}
-                                    defaultValue={currentUser.email}
-                                    render={({ field }) => <TextField
+                                    defaultValue={currentUser?.email || ''}
+                                    render={({field}) => <TextField
                                         {...field}
                                         margin="normal"
                                         required
                                         fullWidth
                                         label="Adresse Email"
                                         autoComplete="email"
-                                        autoFocus
-                                        color="green"
+                                        color="primary"
                                         error={!!errors.email}
                                         helperText={errors.email ? errors.email.message : ''}
                                     />}
@@ -145,14 +146,14 @@ function Profile() {
                                     name="password"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField
+                                    render={({field}) => <TextField
                                         {...field}
                                         margin="normal"
                                         required
                                         fullWidth
                                         label="Mot de Passe"
                                         type="password"
-                                        color="green"
+                                        color="primary"
                                         error={!!errors.password}
                                         helperText={errors.password ? errors.password.message : ''}
                                     />}
@@ -161,9 +162,9 @@ function Profile() {
                         </Grid>
                         <Box mt={2}>
                             {loading ? (
-                                <CircularProgress />
+                                <CircularProgress/>
                             ) : (
-                                <Button type="submit" variant="contained" color="green" fullWidth>
+                                <Button type="submit" variant="contained" color="primary" fullWidth>
                                     Modifier
                                 </Button>
                             )}

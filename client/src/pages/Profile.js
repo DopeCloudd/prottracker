@@ -1,43 +1,17 @@
-import styled from "styled-components";
 import * as React from "react";
 import {useNavigate, Navigate} from "react-router-dom";
-import {useTranslation} from "react-i18next";
 import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from "@mui/material/Typography";
 import {CircularProgress, Grid} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
-import {register} from "../actions/auth";
-import {useState} from "react";
-
-const Container = styled.div`
-    min-height: calc(100% - 100px);
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-`;
-
-const Wrapper = styled.div`
-    width: 50%;
-    display: flex;
-    /*flex-direction: column;
-    align-items: center;
-    justify-content: center;*/
-    padding: 60px 40px;
-    background-color: #171717;
-    box-shadow: 0px 0px 15px 2px #0c0c0c;
-    border-radius: 10px;
-`;
 
 function Profile() {
-    // State of loading request
-    const [loading, setLoading] = useState(false);
+    // Consume store to get user info
+    const {userInfo} = useSelector((state) => state.auth)
     // For navigation
     const navigate = useNavigate();
     // Use dispatch
@@ -57,40 +31,30 @@ function Profile() {
         resolver: yupResolver(schema),
     });
 
-    // Function to be executed on form submission
-    const onSubmit = data => {
-        setLoading(true);
-        dispatch(register(data.lastName, data.firstName, data.email, data.password))
-            .then(() => {
-                navigate("/login");
-                window.location.reload();
-            })
-            .catch(() => {
-                setLoading(false);
-            });
-    };
-
-    // Get current user data
-    const {user: currentUser, isLoggedIn} = useSelector((state) => state.auth);
-
-    if (!isLoggedIn) {
-        return <Navigate to="/"/>;
-    }
-
     return (
-        <Container>
-            <Wrapper>
+        <Box sx={{
+            minHeight: 'calc(100% - 100px)',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+        }}>
+            <Box sx={{
+                width: '50%',
+                display: 'flex',
+            }}>
                 <Box>
                     <Typography variant="h4" align="center" margin="dense">
                         Mon compte
                     </Typography>
-                    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                    <form noValidate>
                         <Grid container spacing={1}>
                             <Grid item xs={12} sm={6}>
                                 <Controller
                                     name="firstName"
                                     control={control}
-                                    defaultValue={currentUser?.firstName || ''}
+                                    defaultValue={userInfo ? userInfo.firstName : ''}
                                     render={({field}) => <TextField
                                         {...field}
                                         margin="normal"
@@ -109,7 +73,7 @@ function Profile() {
                                 <Controller
                                     name="lastName"
                                     control={control}
-                                    defaultValue={currentUser?.lastName || ''}
+                                    defaultValue={userInfo ? userInfo.name : ''}
                                     render={({field}) => <TextField
                                         {...field}
                                         margin="normal"
@@ -127,7 +91,7 @@ function Profile() {
                                 <Controller
                                     name="email"
                                     control={control}
-                                    defaultValue={currentUser?.email || ''}
+                                    defaultValue={userInfo ? userInfo.email : ''}
                                     render={({field}) => <TextField
                                         {...field}
                                         margin="normal"
@@ -160,19 +124,10 @@ function Profile() {
                                 />
                             </Grid>
                         </Grid>
-                        <Box mt={2}>
-                            {loading ? (
-                                <CircularProgress/>
-                            ) : (
-                                <Button type="submit" variant="contained" color="primary" fullWidth>
-                                    Modifier
-                                </Button>
-                            )}
-                        </Box>
                     </form>
                 </Box>
-            </Wrapper>
-        </Container>
+            </Box>
+        </Box>
     );
 }
 

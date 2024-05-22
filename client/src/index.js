@@ -8,8 +8,6 @@ import './i18n';
 //Theme
 import {CssBaseline, ThemeProvider} from "@mui/material";
 import GlobalStyle from "./theme/globalStyle";
-//Theme
-import {lightTheme} from "./theme/allThemes";
 import {darkTheme} from "./theme/allThemes";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -17,7 +17,7 @@ const items = [
         icon: <SavingsIcon/>,
         title: 'Faites des économies',
         description:
-            'Faites des économies sur tout vos achats de produits grâçe à notre comparateur et alerte de prix.',
+            'Faites des économies sur tout vos achats de produits grâçe à nos alerte de prix.',
     },
     {
         icon: <TroubleshootIcon/>,
@@ -29,7 +29,7 @@ const items = [
         icon: <BackHandIcon/>,
         title: 'Pas de publicités',
         description:
-            'Notre système de monétisation nous permet de ne pas impacter votre expérience avec des publicités.',
+            'Notre système de monétisation nous permet de ne pas mettre de publicités.',
     },
     {
         icon: <NotificationsIcon/>,
@@ -108,7 +108,18 @@ export default function Highlights() {
                                     <Typography fontWeight="medium" gutterBottom>
                                         {item.title}
                                     </Typography>
-                                    <Typography variant="body2" sx={{color: 'grey.400'}}>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            color: 'grey.400',
+                                            display: '-webkit-box',
+                                            WebkitBoxOrient: 'vertical',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            WebkitLineClamp: 2,
+                                            lineClamp: 2,
+                                        }}
+                                    >
                                         {item.description}
                                     </Typography>
                                 </div>

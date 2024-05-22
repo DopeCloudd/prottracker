@@ -81,7 +81,7 @@ function Categories() {
             >
                 {loading ? (
                     // Display Skeleton cards during loading
-                    Array.from({length: 5}).map((_, index) => (
+                    Array.from({length: 6}).map((_, index) => (
                         <Box
                             key={index}
                             sx={{
@@ -107,7 +107,7 @@ function Categories() {
                                           sx={{bgcolor: 'rgba(255, 255, 255, 0.13)'}}/>
                             </Typography>
                             <div>
-                                <Skeleton variant="rectangular" width={'100%'} height={25}
+                                <Skeleton variant="rectangular" width={'100%'} height={65}
                                           sx={{bgcolor: 'rgba(255, 255, 255, 0.13)'}}/>
                             </div>
                         </Box>
@@ -140,9 +140,18 @@ function Categories() {
                             >
                                 {t(`${category.name}.title`)}
                             </Typography>
-                            <div>
+                            <Box
+                                sx={{
+                                    display: '-webkit-box',
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    WebkitLineClamp: 3,
+                                    lineClamp: 3,
+                                }}
+                            >
                                 {t(`${category.name}.description`)}
-                            </div>
+                            </Box>
                         </Box>
                     ))
                 )}

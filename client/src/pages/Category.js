@@ -6,26 +6,6 @@ import {useNavigate, useParams} from 'react-router-dom';
 import axios from 'axios';
 import {Box, Rating, Skeleton} from '@mui/material';
 
-const Card = styled.div`
-    width: 60%;
-    height: 220px;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
-    background-color: #171717;
-    box-shadow: 0px 0px 15px 2px #0c0c0c;
-    margin: 4px 0;
-    border-radius: 10px;
-    cursor: pointer;
-    padding: 8px;
-
-    @media (max-width: 600px) {
-        width: 100%;
-    }
-`;
-
 const CardImage = styled.div`
     grid-area: 1 / 1 / 4 / 2;
     position: relative;
@@ -205,7 +185,7 @@ function Category() {
             >
                 {loading ? (
                     // Display Skeleton cards during loading
-                    Array.from({length: 10}).map((_, index) => (
+                    Array.from({length: 16}).map((_, index) => (
                         <Box
                             key={index}
                             sx={{
@@ -294,7 +274,7 @@ function Category() {
                                     <CardImage>
                                         <img
                                             src={convertirUint8ArrayEnUrl(new Uint8Array(produit.image.data))}
-                                            alt={`Image de ${produit.title}`}
+                                            alt={`${produit.title}`}
                                         />
                                     </CardImage>
                                     <CardTopContainer>

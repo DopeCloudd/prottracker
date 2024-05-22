@@ -1,53 +1,53 @@
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate } from 'react-router-dom';
-import { useTranslation } from "react-i18next";
-import { register } from "../actions/auth";
-import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import {useDispatch, useSelector} from "react-redux";
+import {Navigate, useNavigate} from 'react-router-dom';
+import {useTranslation} from "react-i18next";
+import React, {useEffect, useState} from 'react';
+import {useForm, Controller} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import { Checkbox, CircularProgress, FormControlLabel, FormHelperText, Grid, Link, Typography } from "@mui/material";
+import {Checkbox, CircularProgress, FormControlLabel, FormHelperText, Grid, Link, Typography} from "@mui/material";
+import {registerUser} from "../auth/auth.actions";
 
 const Container = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #EAEDED;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #EAEDED;
 `;
 
 const Wrapper = styled.div`
-  width: 60%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px;
-  background-color: #171717;
-  box-shadow: 0px 0px 15px 2px #0c0c0c;
-  border-radius: 10px;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    background-color: #171717;
+    box-shadow: 0px 0px 15px 2px #0c0c0c;
+    border-radius: 10px;
 
-  @media (max-width: 600px) {
-    width: 100%;
-  }
+    @media (max-width: 600px) {
+        width: 100%;
+    }
 `;
 
 function Register() {
-    // State for loading request
-    const [loading, setLoading] = useState(false);
+    const {loading, userInfo, error, success} = useSelector(
+        (state) => state.auth
+    )
+    // Use dispatch
+    const dispatch = useDispatch();
     // For translation
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     // For navigation
     const navigate = useNavigate();
-    // Go to login page
-    const handleButtonLogin = () => {
-        navigate("/login");
-    };
+
     // Yup validation scheme for email, password, firstname, lastname, terms fields
     const schema = yup.object({
         firstName: yup.string().required('Le prénom est requis'),
@@ -58,27 +58,29 @@ function Register() {
         acceptTerms: yup.bool().oneOf([true], 'Vous devez accepter les conditions pour continuer'),
     }).required();
     // Initializing react-hook-form with yupResolver and the yup schema
-    const { control, handleSubmit, formState: { errors } } = useForm({
+    const {control, handleSubmit, formState: {errors}} = useForm({
         resolver: yupResolver(schema),
     });
-    // Use dispatch
-    const dispatch = useDispatch();
-    // Function to be executed on form submission
-    const onSubmit = data => {
-        setLoading(true);
-        dispatch(register(data.lastName, data.firstName, data.email, data.password))
-            .then(() => {
-                navigate("/login");
-            })
-            .catch(() => {
-                setLoading(false);
-            });
-    };
-    // Get if user is logged in
-    const { isLoggedIn } = useSelector(state => state.auth);
 
-    if (isLoggedIn) {
-        return <Navigate to="/" />;
+    useEffect(() => {
+        // redirect user to login page if registration was successful
+        if (success) navigate('/login')
+        // redirect authenticated user to profile screen
+        if (userInfo) navigate('/user-profile')
+    }, [navigate, userInfo, success])
+
+    // Function to be executed on form submission
+    const onSubmit = (data) => {
+        dispatch(registerUser(data))
+    }
+
+    // Go to login page
+    const handleButtonLogin = () => {
+        navigate("/login");
+    };
+
+    if (userInfo) {
+        return <Navigate to="/"/>;
     }
 
     return (
@@ -95,7 +97,7 @@ function Register() {
                                     name="firstName"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField
+                                    render={({field}) => <TextField
                                         {...field}
                                         margin="normal"
                                         required
@@ -114,7 +116,7 @@ function Register() {
                                     name="lastName"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField
+                                    render={({field}) => <TextField
                                         {...field}
                                         margin="normal"
                                         required
@@ -132,7 +134,7 @@ function Register() {
                                     name="email"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField
+                                    render={({field}) => <TextField
                                         {...field}
                                         margin="normal"
                                         required
@@ -151,7 +153,7 @@ function Register() {
                                     name="password"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField
+                                    render={({field}) => <TextField
                                         {...field}
                                         margin="normal"
                                         required
@@ -170,7 +172,7 @@ function Register() {
                                     name="confirmPassword"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField
+                                    render={({field}) => <TextField
                                         {...field}
                                         margin="normal"
                                         required
@@ -188,10 +190,10 @@ function Register() {
                                     name="acceptTerms"
                                     control={control}
                                     defaultValue={false}
-                                    render={({ field }) => (
+                                    render={({field}) => (
                                         <>
                                             <FormControlLabel
-                                                control={<Checkbox {...field} color="success" checked={field.value} />}
+                                                control={<Checkbox {...field} color="success" checked={field.value}/>}
                                                 label={t('register.terms')}
                                             />
                                             {errors.acceptTerms && (
@@ -212,7 +214,7 @@ function Register() {
                                         alignItems: 'center'
                                     }}
                                 >
-                                    <CircularProgress color="success" />
+                                    <CircularProgress color="success"/>
                                 </Box>
                             ) : (
                                 <>
@@ -222,7 +224,8 @@ function Register() {
                                     <Box mt={2}>
                                         <Grid container>
                                             <Grid item>
-                                                <Link sx={{ cursor: 'pointer' }} onClick={handleButtonLogin} variant="body2" color="inherit">
+                                                <Link sx={{cursor: 'pointer'}} onClick={handleButtonLogin}
+                                                      variant="body2" color="inherit">
                                                     {t('register.account')}
                                                 </Link>
                                             </Grid>

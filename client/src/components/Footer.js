@@ -158,20 +158,6 @@ export default function Footer() {
             }}
           >
             <Typography variant="body2" fontWeight={600}>
-              Company
-            </Typography>
-            <Link color="text.secondary" href="#">
-              About us
-            </Link>
-          </Box>
-          <Box
-            sx={{
-              display: { xs: "none", sm: "flex" },
-              flexDirection: "column",
-              gap: 1,
-            }}
-          >
-            <Typography variant="body2" fontWeight={600}>
               Legal
             </Typography>
             <Link color="text.secondary" href="#">

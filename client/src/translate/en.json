@@ -1,4 +1,13 @@
 {
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "login": "Sign in",
+    "register": "Sign up",
+    "logout": "Logout",
+    "profile": "Profile",
+    "filtres": "Filtres"
+  },
   "home": {
     "main-text": "COMPARE THE <span>QUALITY</span> OF YOUR NUTRITION AND FIND IT AT THE BEST <span>PRICE</span>",
     "first-text": "We're your nutrition assistant, comparing and analyzing what you need!",

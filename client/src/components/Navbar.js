@@ -2,6 +2,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Avatar, Box, Button, Typography } from "@mui/material";
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useGetUserDetailsQuery } from "../auth/auth.service";
@@ -9,6 +10,7 @@ import { logout, setCredentials } from "../auth/auth.slice";
 import SwitchLangage from "./SwitchLangage";
 
 function Navbar() {
+  const { t } = useTranslation();
   // Hooks
   const { userInfo, userToken } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -57,23 +59,37 @@ function Navbar() {
         },
       }}
     >
-      <Typography
-        variant="h6"
-        onClick={handleButtonClick}
+      <Box
         sx={{
-          fontFamily: "Integral Oblique, sans-serif",
-          textTransform: "uppercase",
-          cursor: "pointer",
-          fontSize: "clamp(1.625rem, 1.3571rem + 0.7143vw, 2rem)",
-          "& span": {
-            color: "#00A656",
-            fontFamily: "Integral Oblique, sans-serif",
-            textTransform: "uppercase",
-          },
+          display: "flex",
+          alignItems: "center",
         }}
       >
-        MY<span>PROT</span>TRACKER
-      </Typography>
+        <img
+          style={{ height: "40px", width: "40px", marginTop: "6px" }}
+          src="/icon.png"
+          alt="logo"
+          onClick={handleButtonClick}
+        />
+        <Typography
+          variant="h6"
+          onClick={handleButtonClick}
+          sx={{
+            fontFamily: "Integral Oblique, sans-serif",
+            textTransform: "uppercase",
+            cursor: "pointer",
+            fontSize: "clamp(1.625rem, 1.3571rem + 0.7143vw, 2rem)",
+            ml: 1,
+            "& span": {
+              color: "#00A656",
+              fontFamily: "Integral Oblique, sans-serif",
+              textTransform: "uppercase",
+            },
+          }}
+        >
+          MY<span>PROT</span>TRACKER
+        </Typography>
+      </Box>
       <Box
         sx={{
           display: "flex",
@@ -91,13 +107,13 @@ function Navbar() {
             </Box>
             <Button variant="outlined" onClick={() => dispatch(logout())}>
               <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
-              <span>Logout</span>
+              <span>{t("nav.logout")}</span>
             </Button>
           </>
         ) : (
           <Button variant="outlined" onClick={handleLogin}>
             <LoginIcon fontSize="small" sx={{ mr: 1 }} />
-            <span>Login</span>
+            <span>{t("nav.login")}</span>
           </Button>
         )}
       </Box>

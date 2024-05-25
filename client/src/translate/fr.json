@@ -1,4 +1,12 @@
 {
+  "nav": {
+    "home": "Accueil",
+    "products": "Produits",
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion",
+    "profile": "Profil"
+  },
   "home": {
     "main-text": "COMPARE LA <span>QUALITE</span> DE TA NUTRITION ET TROUVE LA AU MEILLEUR <span>PRIX</span>",
     "first-text": "Nous sommes ton assitant nutrition qui compare et analyse ce dont tu as besoin!",

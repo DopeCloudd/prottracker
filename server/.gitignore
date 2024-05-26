@@ -1,8 +1,4 @@
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-.env
-
-/.idea
-DS_Store
+**/node_modules
+**/*.idea
+**/*.DS_Store
+**.env

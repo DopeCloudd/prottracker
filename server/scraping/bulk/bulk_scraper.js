@@ -1,91 +1,105 @@
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const bulk_pages = require('./bulk_pages');
+const puppeteer = require("puppeteer-extra");
+const stealthPlugin = require("puppeteer-extra-plugin-stealth");
+const cheerio = require("cheerio");
+const bulkPages = require("./bulk_pages");
 
-puppeteer.use(StealthPlugin());
+// Use stealth plugin
+puppeteer.use(stealthPlugin());
 
-async function bulkScraping() {
-
-    const buttonCookies = '#amgdprcookie-accept-btn';
-
-    try {
-        const browser = await puppeteer.launch({
-            headless: true,
-            executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-        });
-        const scrapePage = async (url, id_category) => {
-            const page = await browser.newPage();
-
-            await page.setRequestInterception(true);
-            page.on('request', (req) => {
-                if (['image', 'stylesheet', 'font'].includes(req.resourceType())) {
-                    req.abort();
-                } else {
-                    req.continue();
-                }
-            });
-
-            await page.setViewport({width: 1080, height: 1024});
-            await page.goto(url);
-
-            try {
-                await page.waitForSelector(buttonCookies, {timeout: 1500});
-                await page.click(buttonCookies);
-            } catch (e) {
-                console.log('No cookies');
-            }
-
-            // Extract data
-            const data = await page.evaluate(() => {
-                const extractPrice = (selector) => {
-                    const element = document.querySelector(selector);
-                    if (!element) {
-                        return null;
-                    }
-                    // Extract the text and trim it
-                    let priceText = element.innerText.trim();
-                    // Remove currency symbol
-                    priceText = priceText.replace('€', '').trim();
-                    // Replace comma with dot if it's used as a decimal separator
-                    priceText = priceText.replace(',', '.');
-                    return parseFloat(priceText);
-                };
-                const extractText = (selector) => {
-                    const element = document.querySelector(selector);
-                    return element ? element.innerText.trim() : null;
-                };
-                const extractImageUrl = (selector) => {
-                    const element = document.querySelector(selector);
-                    return element ? element.src.trim() : null;
-                };
-
-                return {
-                    title: extractText('span[data-ui-id=\'page-title-wrapper\']'),
-                    price: extractPrice('span[data-price-type=\'finalPrice\'] span.price'),
-                    description: extractText('#description p'),
-                    image: extractImageUrl('.swiper-slide-active .main-image')
-                };
-            });
-
-            await page.close();
-            // Combine the scraped data with the additionalData
-            return {url: url, ...data};
-        };
-
-        // Concurrently scrape all pages
-        const pagesData = await Promise.all(
-            bulk_pages.map(page => {
-                return scrapePage(page.url, page.id_category);
-            })
-        );
-
-        await browser.close();
-        return pagesData;
-
-    } catch (error) {
-        console.error("Error during scraping:", error.message);
+// Helper functions to extract data from the page
+const extractText = (selector, $) => $(selector).html().trim();
+const extractPrice = (selector, $) => {
+  const priceText = $(selector).text().trim();
+  const price = priceText.replace(/[^\d,.]/g, "");
+  return parseFloat(price.replace(",", "."));
+};
+const extractImageUrl = (selector, $) => $(selector).attr("src");
+const extractQuantity = ($, selectors) => {
+  for (const selector of selectors) {
+    const quantityText = $(selector).text().trim();
+    if (quantityText) {
+      return quantityText;
     }
+  }
+  return "N/A";
+};
+
+async function fetchAndExtract(page, pageInfo) {
+  // Enable request interception
+  await page.setRequestInterception(true);
+  page.on("request", (req) => {
+    if (["image", "stylesheet", "font"].includes(req.resourceType())) {
+      req.abort();
+    } else {
+      req.continue();
+    }
+  });
+
+  // Navigate to the URL
+  await page.goto(pageInfo.url, { waitUntil: "networkidle2" });
+
+  // Get the HTML content of the page
+  const content = await page.content();
+
+  // Load the HTML content into cheerio
+  const $ = cheerio.load(content);
+
+  // Extract the title
+  const title = extractText(".header-title", $);
+
+  // Extract the price
+  const price = extractPrice(".dropin-price--default", $);
+
+  // Extract the quantity
+  const quantitySelectors = [
+    ".dropin-text-swatch--selected",
+    ".dropin-picker__select option:selected",
+  ];
+  const quantity = extractQuantity($, quantitySelectors);
+
+  // Extract the description
+  const description = extractText(".attribute-content p", $);
+
+  // Extract the image URL
+  const imageUrl = extractImageUrl(".pdp-carousel__slide--active img", $);
+
+  // Set the brand
+  const brand = "Bulk";
+
+  // Set the URL
+  const url = pageInfo.url;
+
+  // Set the category ID
+  const category = pageInfo.id_category;
+
+  return {
+    url,
+    title,
+    price,
+    quantity,
+    description,
+    brand,
+    imageUrl,
+    category,
+  };
 }
 
-// Exporting the function, not its result
-module.exports = bulkScraping;
+async function bulk() {
+  // Launch Puppeteer browser
+  const browser = await puppeteer.launch({
+    headless: "new",
+    executablePath:
+      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  });
+  const promises = bulkPages.map(async (pageInfo) => {
+    const page = await browser.newPage();
+    const data = await fetchAndExtract(page, pageInfo);
+    await page.close();
+    return data;
+  });
+  const results = await Promise.all(promises);
+  await browser.close();
+  return results;
+}
+
+module.exports = bulk;

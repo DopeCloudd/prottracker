@@ -1,166 +1,119 @@
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const eafit_pages = require('./eafit_pages');
+const puppeteer = require("puppeteer-extra");
+const stealthPlugin = require("puppeteer-extra-plugin-stealth");
+const cheerio = require("cheerio");
+const eafit_pages = require("./eafit_pages");
 
-puppeteer.use(StealthPlugin());
+// Use stealth plugin
+puppeteer.use(stealthPlugin());
 
-async function eafitScraping() {
-
-    const buttonCookies = '#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll';
-
-    try {
-        const browser = await puppeteer.launch({
-            headless: true,
-            userDataDir: './puppeteerProfile'
-        });
-        const scrapePage = async (url, buttonSelector, priceSelector, titleSelector, descriptionSelector, quantitySelector, selectValue, additionalData) => {
-            const page = await browser.newPage();
-
-            await page.setRequestInterception(true);
-            page.on('request', (req) => {
-                if (['image', 'stylesheet', 'font'].includes(req.resourceType())) {
-                    req.abort();
-                } else {
-                    req.continue();
-                }
-            });
-
-            await page.setViewport({width: 1080, height: 1024});
-            await page.goto(url);
-
-            try {
-                await page.waitForSelector(buttonCookies, {timeout: 1500});
-                await page.click(buttonCookies);
-            } catch (e) {
-                console.log('No cookies');
-            }
-
-            // Extract data
-            const data = await page.evaluate((priceSel, titleSel, descSel, quantitySel) => {
-                const extractPrice = (selector) => {
-                    const element = document.querySelector(selector);
-                    if (!element) {
-                        return null;
-                    }
-                    // Extract the text and trim it
-                    let priceText = element.innerText.trim();
-
-                    // Remove currency symbol
-                    priceText = priceText.replace('€', '').trim();
-
-                    // Replace comma with dot if it's used as a decimal separator
-                    priceText = priceText.replace(',', '.');
-
-                    return parseFloat(priceText);
-                };
-                const extractText = (selector) => {
-                    const element = document.querySelector(selector);
-                    return element ? element.innerText.trim() : null;
-                };
-
-                const extractQuantity = (selector) => {
-                    // Check if selector starts with '#'
-                    if (selector.startsWith('#')) {
-                        const element = document.querySelector(selector);
-                        if (!element) {
-                            return null;
-                        }
-                        // If it's a select dropdown, return the text of the selected option.
-                        if (element.tagName.toLowerCase() === 'select') {
-                            const selectedOption = element.options[element.selectedIndex];
-                            return selectedOption ? selectedOption.text.trim() : null;
-                        }
-                    } else {
-                        // If selector doesn't start with '#', return the selector itself
-                        return selector;
-                    }
-                };
-
-                return {
-                    price: extractPrice(priceSel),
-                    title: extractText(titleSel),
-                    description: extractText(descSel),
-                    quantity: extractQuantity(quantitySel)
-                };
-            }, priceSelector, titleSelector, descriptionSelector, quantitySelector);
-
-            await page.close();
-            return {...data, ...additionalData, url: url};
-        };
-
-        // Define selectors for each product
-        const selectors = {
-            Whey: {
-                priceSelector: "span.price-wrapper span.price",
-                titleSelector: "h1.page-title",
-                descriptionSelector: "div.value p",
-                quantitySelector: "#attribute154",
-                additionalData: {
-                    image: './eafit/image/eafit_whey.png',
-                    id_category: 1,
-                    brand: 'Eafit'
-                }
-            },
-            Pure_Whey_Isolate: {
-                priceSelector: "span.price-wrapper span.price",
-                titleSelector: "h1.page-title",
-                descriptionSelector: "div.value p",
-                quantitySelector: "750g",
-                additionalData: {
-                    image: './eafit/image/eafit_isolate.png',
-                    id_category: 1,
-                    brand: 'Eafit'
-                }
-            },
-            Micellaire: {
-                priceSelector: "span.price-wrapper span.price",
-                titleSelector: "h1.page-title",
-                descriptionSelector: "div.value p",
-                quantitySelector: "#attribute154",
-                additionalData: {
-                    image: './eafit/image/eafit_micellaire.png',
-                    id_category: 1,
-                    brand: 'Eafit'
-                }
-            },
-            Gainer_Prise_De_Masse: {
-                priceSelector: "span.price-wrapper span.price",
-                titleSelector: "h1.page-title",
-                descriptionSelector: "div.value p",
-                quantitySelector: "#attribute154",
-                additionalData: {
-                    image: './eafit/image/eafit_gainer.png',
-                    id_category: 3,
-                    brand: 'Eafit'
-                }
-            },
-            Pre_Workout: {
-                priceSelector: "span.price-wrapper span.price",
-                titleSelector: "h1.page-title",
-                descriptionSelector: "div.value p",
-                quantitySelector: "330g",
-                additionalData: {
-                    image: './eafit/image/eafit_pre.png',
-                    id_category: 5,
-                    brand: 'Eafit'
-                }
-            },
-        };
-
-        // Concurrently scrape all pages
-        const pagesData = await Promise.all(
-            Object.entries(eafit_pages).map(([key, url]) => {
-                const sels = selectors[key];
-                return scrapePage(url, sels.buttonSelector, sels.priceSelector, sels.titleSelector, sels.descriptionSelector, sels.quantitySelector, sels.selectValue, sels.additionalData);
-            })
-        );
-
-        await browser.close();
-        return pagesData;
-
-    } catch (error) {
-        console.error("Error during scraping:", error.message);
+// Helper functions to extract data from the page
+const extractText = (selector, $) => {
+  const element = $(selector);
+  return element.length ? element.html().trim() : "N/A";
+};
+const extractDescription = (selector, $) => {
+  let title = $(selector + " h2").first();
+  title = title.length ? title.text().trim() + "\n" : "";
+  const pElements = [];
+  let nextElement = $(selector + " h2")
+    .first()
+    .next();
+  while (nextElement.length && nextElement[0].tagName !== "hr") {
+    if (nextElement[0].tagName === "p") {
+      pElements.push(nextElement.text().trim());
     }
+    nextElement = nextElement.next();
+  }
+  return title + pElements.join("\n");
+};
+const extractImageUrl = (selector, $) => {
+  const element = $(selector);
+  return element.length ? element.attr("src") : "N/A";
+};
+const extractQuantity = (selector, $) => {
+  let element = $(selector);
+  element = element.length ? element.text().trim() : "N/A";
+  const match = element.match(/\d+.*$/);
+  return match ? match[0] : "N/A";
+};
+
+async function fetchAndExtract(page, pageInfo) {
+  // Enable request interception
+  await page.setRequestInterception(true);
+  page.on("request", (req) => {
+    if (["image", "stylesheet", "font"].includes(req.resourceType())) {
+      req.abort();
+    } else {
+      req.continue();
+    }
+  });
+
+  // Navigate to the URL
+  await page.goto(pageInfo.url, { waitUntil: "networkidle2" });
+
+  // Get the HTML content of the page
+  const content = await page.content();
+
+  // Load the HTML content into cheerio
+  const $ = cheerio.load(content);
+
+  // Extract the title
+  const title = extractText('[data-ui-id="page-title-wrapper"]', $);
+
+  // Extract the price
+  const price =
+    parseFloat($('meta[property="product:price:amount"]').attr("content")) ||
+    "N/A";
+
+  // Extract the quantity
+  const quantity = extractQuantity('[data-ui-id="page-title-wrapper"]', $);
+
+  // Extract the description
+  const description = extractDescription(
+    "div.product.attribute.description",
+    $
+  );
+
+  // Extract the image URL
+  const imageUrl = extractImageUrl("img.amasty-main-image", $);
+
+  // Set the brand
+  const brand = "Eafit";
+
+  // Set the URL
+  const url = pageInfo.url;
+
+  // Set the category ID
+  const category = pageInfo.id_category;
+
+  return {
+    url,
+    title,
+    price,
+    quantity,
+    description,
+    brand,
+    imageUrl,
+    category,
+  };
 }
 
-module.exports = eafitScraping;
+async function eafit() {
+  // Launch Puppeteer browser
+  const browser = await puppeteer.launch({
+    headless: "new",
+    executablePath:
+      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  });
+  const promises = eafit_pages.map(async (pageInfo) => {
+    const page = await browser.newPage();
+    const data = await fetchAndExtract(page, pageInfo);
+    await page.close();
+    return data;
+  });
+  const results = await Promise.all(promises);
+  await browser.close();
+  return results;
+}
+
+module.exports = eafit;

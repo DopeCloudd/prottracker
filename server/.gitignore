@@ -1,5 +1,6 @@
 **/node_modules
-**/*.idea
+**/.idea
 **/*.DS_Store
 **.env
-**test.*
+**test.js
+/scaping/test.js

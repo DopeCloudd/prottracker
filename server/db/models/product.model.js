@@ -1,21 +1,25 @@
 const { DataTypes } = require("sequelize");
 module.exports = (sequelize, Sequelize) => {
   const Product = sequelize.define("products", {
-    id_category: {
+    id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      primaryKey: true,
     },
     title: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     image: {
-      type: DataTypes.STRING,
+      type: DataTypes.BLOB("long"),
       allowNull: true,
     },
     currentPrice: {
       type: DataTypes.FLOAT,
-      allowNull: false,
     },
     priceHistory: {
       type: DataTypes.JSON,
@@ -37,13 +41,12 @@ module.exports = (sequelize, Sequelize) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    url: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     brand: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    id_category: {
+      type: DataTypes.INTEGER,
     },
   });
 

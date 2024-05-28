@@ -1,5 +1,48 @@
-**/node_modules
-**/*.idea
-**/*.DS_Store
-**.env
-**/test.js
+# Node modules
+server/node_modules/
+client/node_modules/
+
+# Logs
+server/logs/
+client/logs/
+*.log
+
+# Build directories
+server/dist/
+client/build/
+
+# Environment variables
+server/.env
+client/.env
+
+# Coverage directory used by tools like istanbul
+server/coverage/
+client/coverage/
+
+# Mac system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Dependency directories
+server/npm-debug.log*
+client/npm-debug.log*
+server/yarn-debug.log*
+client/yarn-debug.log*
+server/yarn-error.log*
+client/yarn-error.log*
+
+# Other files
+server/.eslintcache
+client/.eslintcache
+server/scraping/test.js

@@ -9,7 +9,13 @@ puppeteer.use(stealthPlugin());
 // Helper functions to extract data from the page
 const extractText = (selector, $) => {
   const element = $(selector);
-  return element.length ? element.html().trim() : "N/A";
+  return element.length ? element.attr("content") : "N/A";
+};
+const extractPrice = (selector, $) => {
+  const element = $(selector);
+  const content = element.attr("content");
+  const price = parseFloat(content);
+  return isNaN(price) ? "N/A" : price;
 };
 const extractDescription = (selector, $) => {
   let title = $(selector + " h2").first();
@@ -28,16 +34,14 @@ const extractDescription = (selector, $) => {
 };
 const extractImageUrl = (selector, $) => {
   const element = $(selector);
-  return element.length ? element.attr("src") : "N/A";
+  return element.length ? element.attr("content") : "N/A";
 };
 const extractQuantity = (selector, $) => {
-  let element = $(selector);
-  element = element.length ? element.text().trim() : "N/A";
-  const match = element.match(/\d+.*$/);
-  return match ? match[0] : "N/A";
+  const element = $(selector).next();
+  return element.length ? element.text().trim() : "N/A";
 };
 
-async function fetchAndExtract(page, pageInfo) {
+async function fetchAndExtract(page, pageInfo, config) {
   // Enable request interception
   await page.setRequestInterception(true);
   page.on("request", (req) => {
@@ -57,51 +61,59 @@ async function fetchAndExtract(page, pageInfo) {
   // Load the HTML content into cheerio
   const $ = cheerio.load(content);
 
+  // Initialize the result object
+  const result = {};
+  // Get the selectors
+  const selectors = pageInfo.selectors;
+
   // Extract the title
-  const title = extractText('[data-ui-id="page-title-wrapper"]', $);
+  if (config.title) {
+    result.title = extractText(selectors.title, $);
+  }
 
   // Extract the price
-  const price =
-    parseFloat($('meta[property="product:price:amount"]').attr("content")) ||
-    "N/A";
+  if (config.price) {
+    result.price = extractPrice(selectors.price, $);
+  }
 
   // Extract the quantity
-  const quantity = extractQuantity('[data-ui-id="page-title-wrapper"]', $);
+  if (config.quantity) {
+    result.quantity = extractQuantity(selectors.quantity, $);
+  }
 
   // Extract the description
-  const description = extractDescription(
-    "div.product.attribute.description",
-    $
-  );
+  if (config.description) {
+    result.description = extractDescription(selectors.description, $);
+  }
 
   // Extract the image URL
-  const imageUrl = extractImageUrl("img.amasty-main-image", $);
+  if (config.imageUrl) {
+    result.imageUrl = extractImageUrl(selectors.imageUrl, $);
+  }
 
   // Set the brand
-  const brand = "Eafit";
+  if (config.brand) {
+    result.brand = "Eafit";
+  }
 
   // Set the URL
-  const url = pageInfo.url;
+  if (config.url) {
+    result.url = pageInfo.url;
+  }
 
   // Set the category ID
-  const category = pageInfo.id_category;
+  if (config.category) {
+    result.category = pageInfo.id_category;
+  }
 
-  return {
-    url,
-    title,
-    price,
-    quantity,
-    description,
-    brand,
-    imageUrl,
-    category,
-  };
+  // Return the result object
+  return result;
 }
 
-async function eafit(browser) {
+async function eafit(browser, config) {
   const promises = eafit_pages.map(async (pageInfo) => {
     const page = await browser.newPage();
-    const data = await fetchAndExtract(page, pageInfo);
+    const data = await fetchAndExtract(page, pageInfo, config);
     await page.close();
     return data;
   });

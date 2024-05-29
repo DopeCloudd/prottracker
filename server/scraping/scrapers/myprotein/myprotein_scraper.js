@@ -1,4 +1,3 @@
-const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const myprotein_pages = require("./myprotein_pages");
 
@@ -24,7 +23,7 @@ const extractQuantity = (selector, $) => {
     : null;
 };
 
-async function fetchAndExtract(page, pageInfo) {
+async function fetchAndExtract(page, pageInfo, config) {
   // Enable request interception
   await page.setRequestInterception(true);
   page.on("request", (req) => {
@@ -44,52 +43,58 @@ async function fetchAndExtract(page, pageInfo) {
   // Load the HTML content into cheerio
   const $ = cheerio.load(content);
 
+  // Initialize the result object
+  const result = {};
+  // Get the selectors
+  const selectors = pageInfo.selectors;
+
   // Extract the title
-  const title = extractText("h1.productName_title", $);
+  if (config.title) {
+    result.title = extractText(selectors.title, $);
+  }
 
   // Extract the price
-  const price = extractPrice("p.productPrice_price", $);
+  if (config.price) {
+    result.price = extractPrice(selectors.price, $);
+  }
 
   // Extract the quantity
-  const quantity = extractQuantity(
-    "button.athenaProductVariations_box[data-selected]",
-    $
-  );
+  if (config.quantity) {
+    result.quantity = extractQuantity(selectors.quantity, $);
+  }
 
   // Extract the description
-  const description = extractText(
-    "div.productDescription_contentProperties p",
-    $
-  );
+  if (config.description) {
+    result.description = extractText(selectors.description, $);
+  }
 
   // Extract the image URL
-  const imageUrl = extractImageUrl("img.athenaProductImageCarousel_image", $);
+  if (config.imageUrl) {
+    result.imageUrl = extractImageUrl(selectors.imageUrl, $);
+  }
 
   // Set the brand
-  const brand = "Myprotein";
+  if (config.brand) {
+    result.brand = "Myprotein";
+  }
 
   // Set the URL
-  const url = pageInfo.url;
+  if (config.url) {
+    result.url = pageInfo.url;
+  }
 
-  // Set the category id
-  const category = pageInfo.id_category;
+  // Set the category ID
+  if (config.category) {
+    result.category = pageInfo.id_category;
+  }
 
-  return {
-    url,
-    title,
-    price,
-    quantity,
-    description,
-    brand,
-    imageUrl,
-    category,
-  };
+  return result;
 }
 
-async function myprotein(browser) {
+async function myprotein(browser, config) {
   const promises = myprotein_pages.map(async (pageInfo) => {
     const page = await browser.newPage();
-    const data = await fetchAndExtract(page, pageInfo);
+    const data = await fetchAndExtract(page, pageInfo, config);
     await page.close();
     return data;
   });

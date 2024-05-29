@@ -1,10 +1,5 @@
-const puppeteer = require("puppeteer-extra");
-const stealthPlugin = require("puppeteer-extra-plugin-stealth");
 const cheerio = require("cheerio");
 const prozis_pages = require("./prozis_pages");
-
-// Use stealth plugin
-puppeteer.use(stealthPlugin());
 
 // Helper functions to extract data from the page
 const extractText = (selector, $) => {
@@ -36,7 +31,7 @@ const extractQuantity = (selector, $) => {
   return match ? match[0] : "N/A";
 };
 
-async function fetchAndExtract(page, pageInfo) {
+async function fetchAndExtract(page, pageInfo, config) {
   // Enable request interception
   await page.setRequestInterception(true);
   page.on("request", (req) => {
@@ -68,50 +63,58 @@ async function fetchAndExtract(page, pageInfo) {
   // Load the HTML content into cheerio
   const $ = cheerio.load(content);
 
+  // Initialize the result object
+  const result = {};
+  // Get the selectors
+  const selectors = pageInfo.selectors;
+
   // Extract the title
-  const title = extractText("p.product-name", $);
+  if (config.title) {
+    result.title = extractText(selectors.title, $);
+  }
 
   // Extract the price
-  const price = extractPrice("p.final-price", $);
+  if (config.price) {
+    result.price = extractPrice(selectors.price, $);
+  }
 
   // Extract the quantity
-  const quantity = extractQuantity("p.product-name", $);
+  if (config.quantity) {
+    result.quantity = extractQuantity(selectors.quantity, $);
+  }
 
   // Extract the description
-  const descriptions = [
-    "div#description div.block02 h6",
-    "div#description div.block04 h4",
-  ];
-  const description = extractDescription(descriptions, $);
+  if (config.description) {
+    result.description = extractDescription(selectors.description, $);
+  }
 
   // Extract the image URL
-  const imageUrl = extractImageUrl("div.main-block picture img", $);
+  if (config.imageUrl) {
+    result.imageUrl = extractImageUrl(selectors.imageUrl, $);
+  }
 
   // Set the brand
-  const brand = "Prozis";
+  if (config.brand) {
+    result.brand = "Prozis";
+  }
 
   // Set the URL
-  const url = pageInfo.url;
+  if (config.url) {
+    result.url = pageInfo.url;
+  }
 
-  // Set the category id
-  const categoryId = pageInfo.id_category;
+  // Set the category ID
+  if (config.category) {
+    result.category = pageInfo.id_category;
+  }
 
-  return {
-    url,
-    title,
-    price,
-    quantity,
-    description,
-    brand,
-    imageUrl,
-    categoryId,
-  };
+  return result;
 }
 
-async function prozis(browser) {
+async function prozis(browser, config) {
   const promises = prozis_pages.map(async (pageInfo) => {
     const page = await browser.newPage();
-    const data = await fetchAndExtract(page, pageInfo);
+    const data = await fetchAndExtract(page, pageInfo, config);
     await page.close();
     return data;
   });

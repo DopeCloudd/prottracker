@@ -1,10 +1,6 @@
-const puppeteer = require("puppeteer-extra");
-const stealthPlugin = require("puppeteer-extra-plugin-stealth");
+// Initiate the scraping of the Bulk website
 const cheerio = require("cheerio");
-const bulkPages = require("./bulk_pages");
-
-// Use stealth plugin
-puppeteer.use(stealthPlugin());
+const bulk_pages = require("./bulk_pages");
 
 // Helper functions to extract data from the page
 const extractText = (selector, $) => {
@@ -17,11 +13,12 @@ const extractPrice = (selector, $) => {
   return parseFloat(price.replace(",", "."));
 };
 const extractImageUrl = (selector, $) => $(selector).attr("src");
-const extractQuantity = ($, selectors) => {
+const extractQuantity = (selectors, $) => {
   for (const selector of selectors) {
-    const quantityText = $(selector).text().trim();
-    if (quantityText) {
-      return quantityText;
+    if ($(selector).text().trim().length) {
+      return $(selector).text().trim();
+    } else if ($(selector).next().text().trim().length) {
+      return $(selector).next().text().trim();
     }
   }
   return "N/A";
@@ -47,35 +44,34 @@ async function fetchAndExtract(page, pageInfo, config) {
   // Load the HTML content into cheerio
   const $ = cheerio.load(content);
 
+  // Initialize the result object
   const result = {};
+  // Get the selectors
+  const selectors = pageInfo.selectors;
 
   // Extract the title
   if (config.title) {
-    result.title = extractText(".header-title", $);
+    result.title = extractText(selectors.title, $);
   }
 
   // Extract the price
   if (config.price) {
-    result.price = extractPrice(".dropin-price--default", $);
+    result.price = extractPrice(selectors.price, $);
   }
 
   // Extract the quantity
   if (config.quantity) {
-    const quantitySelectors = [
-      ".dropin-text-swatch--selected",
-      ".dropin-picker__select option:selected",
-    ];
-    result.quantity = extractQuantity($, quantitySelectors);
+    result.quantity = extractQuantity(selectors.quantity, $);
   }
 
   // Extract the description
   if (config.description) {
-    result.description = extractText(".attribute-content p", $);
+    result.description = extractText(selectors.description, $);
   }
 
   // Extract the image URL
   if (config.imageUrl) {
-    result.imageUrl = extractImageUrl(".pdp-carousel__slide--active img", $);
+    result.imageUrl = extractImageUrl(selectors.imageUrl, $);
   }
 
   // Set the brand
@@ -97,7 +93,7 @@ async function fetchAndExtract(page, pageInfo, config) {
 }
 
 async function bulk(browser, config) {
-  const promises = bulkPages.map(async (pageInfo) => {
+  const promises = bulk_pages.map(async (pageInfo) => {
     const page = await browser.newPage();
     const data = await fetchAndExtract(page, pageInfo, config);
     await page.close();

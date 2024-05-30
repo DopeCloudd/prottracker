@@ -2,15 +2,12 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
-import FacebookIcon from "@mui/icons-material/Facebook";
 
 function Copyright() {
   return (
@@ -126,28 +123,28 @@ export default function Footer() {
             }}
           >
             <Typography variant="body2" fontWeight={600}>
-              Product
+              Produit
             </Typography>
             <Link
               color="text.secondary"
               href="#hero"
               onClick={(event) => handleLinkClick(event, "hero")}
             >
-              Features
+              Description
             </Link>
             <Link
               color="text.secondary"
               href="#highlights"
               onClick={(event) => handleLinkClick(event, "highlights")}
             >
-              Highlights
+              Avantages
             </Link>
             <Link
               color="text.secondary"
               href="#pricing"
               onClick={(event) => handleLinkClick(event, "pricing")}
             >
-              Pricing
+              Abonnement
             </Link>
           </Box>
           <Box
@@ -193,7 +190,7 @@ export default function Footer() {
             </Link>
             <Copyright />
           </div>
-          <Stack
+          {/* <Stack
             direction="row"
             justifyContent="left"
             spacing={1}
@@ -210,7 +207,7 @@ export default function Footer() {
             >
               <FacebookIcon />
             </IconButton>
-          </Stack>
+          </Stack> */}
         </Box>
       </Container>
     </>

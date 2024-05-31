@@ -8,7 +8,7 @@ import Breadcrumb from "./components/Breadcrumb";
 import Footer from "./components/Footer";
 // Pages
 import ProtectedRoute from "./components/routing/ProtectedRoute";
-import Payment from "./components/stripe/Payment";
+import Subscription from "./components/stripe/Subscription";
 import Success from "./components/stripe/Success";
 import Categories from "./pages/Categories";
 import Category from "./pages/Category";
@@ -45,7 +45,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/profile" element={<Profile />} />
-            <Route path="/payment" element={<Payment />} />
+            <Route path="/subscription/:productId" element={<Subscription />} />
             <Route path="/success" element={<Success />} />
           </Route>
           <Route path="*" element={<NotFound />} />

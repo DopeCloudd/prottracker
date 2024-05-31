@@ -3,8 +3,8 @@ const categories = require("../../product.category");
 const selectors = {
   title: 'meta[property="og:title"]',
   price: 'meta[property="product:price:amount"]',
-  quantity: "label.swatch-option.ring",
-  description: "div.product.attribute.description",
+  quantity: "h1",
+  description: "details#description",
   imageUrl: 'meta[property="og:image"]',
 };
 

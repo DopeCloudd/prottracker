@@ -1,10 +1,5 @@
-const puppeteer = require("puppeteer-extra");
-const stealthPlugin = require("puppeteer-extra-plugin-stealth");
 const cheerio = require("cheerio");
 const eafit_pages = require("./eafit_pages");
-
-// Use stealth plugin
-puppeteer.use(stealthPlugin());
 
 // Helper functions to extract data from the page
 const extractText = (selector, $) => {
@@ -20,25 +15,19 @@ const extractPrice = (selector, $) => {
 const extractDescription = (selector, $) => {
   let title = $(selector + " h2").first();
   title = title.length ? title.text().trim() + "\n" : "";
-  const pElements = [];
-  let nextElement = $(selector + " h2")
-    .first()
-    .next();
-  while (nextElement.length && nextElement[0].tagName !== "hr") {
-    if (nextElement[0].tagName === "p") {
-      pElements.push(nextElement.text().trim());
-    }
-    nextElement = nextElement.next();
-  }
-  return title + pElements.join("\n");
+  let content = $(selector + " p");
+  content = content.length ? content.text().trim() : "";
+  return title + content;
 };
 const extractImageUrl = (selector, $) => {
   const element = $(selector);
   return element.length ? element.attr("content") : "N/A";
 };
 const extractQuantity = (selector, $) => {
-  const element = $(selector).next();
-  return element.length ? element.text().trim() : "N/A";
+  let element = $(selector);
+  element = element.length ? element.text().trim() : "N/A";
+  const match = element.match(/\d+\s?[a-zA-Z]+/);
+  return match ? match[0] : "N/A";
 };
 
 async function fetchAndExtract(page, pageInfo, config) {
@@ -51,6 +40,11 @@ async function fetchAndExtract(page, pageInfo, config) {
       req.continue();
     }
   });
+
+  // Set the user agent
+  await page.setUserAgent(
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+  );
 
   // Navigate to the URL
   await page.goto(pageInfo.url, { waitUntil: "networkidle2" });

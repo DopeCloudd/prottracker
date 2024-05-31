@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useGetUserDetailsQuery } from "../auth/auth.service";
-import { logout, setCredentials } from "../auth/auth.slice";
+import { logout, setCredentials, setLoading } from "../auth/auth.slice";
 import SwitchLangage from "./SwitchLangage";
 
 function Navbar() {
@@ -26,6 +26,14 @@ function Navbar() {
       dispatch(setCredentials(userDetailsQuery.data));
     }
   }, [userToken, userDetailsQuery.data, dispatch]);
+
+  useEffect(() => {
+    if (userDetailsQuery.isLoading) {
+      dispatch(setLoading(true));
+    } else {
+      dispatch(setLoading(false));
+    }
+  }, [userDetailsQuery.isLoading, dispatch]);
 
   // Event handlers for navigation button clicks
   const handleButtonClick = () => {

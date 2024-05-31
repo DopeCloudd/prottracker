@@ -3,11 +3,27 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import Axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import CheckoutForm from "./CheckoutForm";
 
-export default function Payment() {
+export default function Subscription() {
+  const { userInfo } = useSelector((state) => state.auth);
+  let { productId } = useParams();
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState("");
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const response = await Axios.get(
+        `http://localhost:3032/stripe/product/${productId}`
+      );
+      setProduct(response.data.product);
+    };
+
+    fetchProduct();
+  }, [productId]);
 
   useEffect(() => {
     const fetchStripePublicKey = async () => {
@@ -22,18 +38,23 @@ export default function Payment() {
   }, []);
 
   useEffect(() => {
-    const createPaymentIntent = async () => {
-      fetch("http://localhost:3032/stripe/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: 1000 }),
-      })
-        .then((res) => res.json())
-        .then((data) => setClientSecret(data.clientSecret));
+    const createSubscriptionIntent = async () => {
+      if (product) {
+        fetch("http://localhost:3032/stripe/create-subscription", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: userInfo.id,
+            planId: product.default_price,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => setClientSecret(data.clientSecret));
+      }
     };
 
-    createPaymentIntent();
-  }, []);
+    createSubscriptionIntent();
+  }, [userInfo, product]);
 
   const appearance = {
     theme: "flat",
@@ -71,7 +92,7 @@ export default function Payment() {
     <Box>
       {stripePromise && clientSecret && (
         <Elements stripe={stripePromise} options={options}>
-          <CheckoutForm />
+          <CheckoutForm product={product} />
         </Elements>
       )}
     </Box>

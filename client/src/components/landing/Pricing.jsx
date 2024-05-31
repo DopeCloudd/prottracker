@@ -12,6 +12,7 @@ import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
 const tiers = [
   {
@@ -27,6 +28,7 @@ const tiers = [
     ],
     buttonText: "S'abonner",
     buttonVariant: "outlined",
+    stripeIdProduct: "prod_QCDD4bPwHRCG18",
   },
   {
     title: "Muscle Builder",
@@ -36,6 +38,7 @@ const tiers = [
     description: ["Tout Power Lift", "Réduction sur l'abonnement de 40%"],
     buttonText: "S'abonner",
     buttonVariant: "contained",
+    stripeIdProduct: "prod_QCrjhRU1NNoBHr",
   },
   {
     title: "Pro Gains",
@@ -45,10 +48,17 @@ const tiers = [
     description: ["Tout Power Lift", "Réduction sur l'abonnement de 80%"],
     buttonText: "S'abonner",
     buttonVariant: "outlined",
+    stripeIdProduct: "prod_QCrj2lSpSG7ywY",
   },
 ];
 
 export default function Pricing() {
+  const navigate = useNavigate();
+
+  const handleSubscription = (stripeIdProduct) => {
+    navigate("/subscription/" + stripeIdProduct);
+  };
+
   return (
     <Container
       id="pricing"
@@ -195,7 +205,7 @@ export default function Pricing() {
                       }}
                     />
                     <Typography
-                      component="text"
+                      component="p"
                       variant="subtitle2"
                       sx={{
                         color:
@@ -213,9 +223,7 @@ export default function Pricing() {
                 <Button
                   fullWidth
                   variant={tier.buttonVariant}
-                  component="a"
-                  href="/material-ui/getting-started/templates/checkout/"
-                  target="_blank"
+                  onClick={() => handleSubscription(tier.stripeIdProduct)}
                 >
                   {tier.buttonText}
                 </Button>

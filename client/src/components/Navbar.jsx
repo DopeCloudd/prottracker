@@ -73,12 +73,22 @@ function Navbar() {
           alignItems: "center",
         }}
       >
-        <img
-          style={{ height: "40px", width: "40px", marginTop: "6px" }}
-          src="/icon.png"
-          alt="logo"
-          onClick={handleButtonClick}
-        />
+        <Box
+          sx={{
+            height: { xs: "30px", sm: "40px" },
+            width: { xs: "30px", sm: "40px" },
+          }}
+        >
+          <img
+            style={{
+              height: "100%",
+              width: "100%",
+            }}
+            src="/icon.png"
+            alt="logo"
+            onClick={handleButtonClick}
+          />
+        </Box>
         <Typography
           variant="h6"
           onClick={handleButtonClick}
@@ -86,7 +96,7 @@ function Navbar() {
             fontFamily: "Integral Oblique, sans-serif",
             textTransform: "uppercase",
             cursor: "pointer",
-            fontSize: "clamp(1.625rem, 1.3571rem + 0.7143vw, 2rem)",
+            fontSize: "clamp(1rem, 0.4375rem + 1.5vw, 1.75rem)",
             ml: 1,
             "& span": {
               color: "#00A656",
@@ -108,20 +118,34 @@ function Navbar() {
         <SwitchLangage />
         {userInfo ? (
           <>
-            <Box mr={3}>
+            <Box sx={{ mr: { xs: 2, md: 3 } }}>
               <Avatar sx={{ cursor: "pointer" }} onClick={handleProfile}>
                 {userInfo.firstName ? userInfo.firstName.substring(0, 1) : ""}
               </Avatar>
             </Box>
             <Button variant="outlined" onClick={() => dispatch(logout())}>
-              <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
-              <span>{t("nav.logout")}</span>
+              <LogoutIcon fontSize="small" sx={{ mr: { xs: 0, md: 1 } }} />
+              <Typography
+                component="span"
+                sx={{
+                  display: { xs: "none", md: "block" },
+                }}
+              >
+                {t("nav.logout")}
+              </Typography>
             </Button>
           </>
         ) : (
           <Button variant="outlined" onClick={handleLogin}>
             <LoginIcon fontSize="small" sx={{ mr: 1 }} />
-            <span>{t("nav.login")}</span>
+            <Typography
+              component="span"
+              sx={{
+                display: { xs: "none", md: "block" },
+              }}
+            >
+              {t("nav.login")}
+            </Typography>
           </Button>
         )}
       </Box>

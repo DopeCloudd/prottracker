@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router-dom";
 // Barre de navigation
 import Navbar from "./components/Navbar";
 // Breadcrumb
-import Breadcrumb from "./components/Breadcrumb";
 // Footer
 import Footer from "./components/Footer";
 // Pages
@@ -29,7 +28,7 @@ function App() {
       }}
     >
       <Navbar />
-      <Breadcrumb />
+      {/* <Breadcrumb /> */}
       <Box
         sx={{
           flex: "1 0 auto",

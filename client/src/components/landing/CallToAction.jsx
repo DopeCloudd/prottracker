@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 const ActionButton = styled(Button)(({ theme }) => ({
-  width: "40%",
+  width: "100%",
   padding: "0.6em 2em",
   borderRadius: "18px",
   outline: "2px solid",
@@ -30,15 +30,23 @@ export default function CallToAction() {
         pt: 4,
         pb: 4,
         backgroundColor: "#171717",
-        height: "fit-content",
-        textAlign: "center",
         display: "flex",
         justifyContent: "center",
       }}
     >
-      <ActionButton onClick={handleButtonClick}>
-        {t("home.button")}
-      </ActionButton>
+      <Box
+        sx={{
+          height: "fit-content",
+          width: { xs: "70%", md: "50%" },
+          textAlign: "center",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <ActionButton onClick={handleButtonClick}>
+          {t("home.button")}
+        </ActionButton>
+      </Box>
     </Box>
   );
 }

@@ -46,3 +46,4 @@ client/yarn-error.log*
 server/.eslintcache
 client/.eslintcache
 server/scraping/test.js
+server/scraping/images/

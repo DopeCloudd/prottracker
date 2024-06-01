@@ -54,6 +54,7 @@ const SwitchLangage = () => {
   return (
     <Box
       sx={{
+        display: { xs: "none", sm: "flex" },
         color: "#EAEDED",
         backgroundColor: "#121212",
         mr: 2,

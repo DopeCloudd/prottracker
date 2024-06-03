@@ -2,6 +2,7 @@ import { Box, Rating, Typography } from "@mui/material";
 import axios from "axios";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import BackLink from "../components/BackLink";
 import { SnackbarContext } from "../components/contexts/SnackbarContext";
@@ -25,6 +26,11 @@ const removeAccents = (str) => {
 };
 
 function Product() {
+  const { likedProducts, alertedProducts } = useSelector(
+    (state) => state.userProducts
+  );
+  const [liked, setLiked] = useState(false);
+  const [alerted, setAlerted] = useState(false);
   // State of the alert snackbar
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [openSnackbarLike, setOpenSnackbarLike] = useState(false);
@@ -60,6 +66,17 @@ function Product() {
 
     getProduct();
   }, [productId]);
+
+  useEffect(() => {
+    // If productId is in the likedProducts array, set liked to true
+    if (likedProducts.includes(parseInt(productId, 10))) {
+      setLiked(true);
+    }
+    // If productId is in the alertedProducts array, set alerted to true
+    if (alertedProducts.includes(parseInt(productId, 10))) {
+      setAlerted(true);
+    }
+  }, [likedProducts, alertedProducts, productId]);
 
   return (
     <Box
@@ -115,8 +132,8 @@ function Product() {
                   setOpenSnackbarLike,
                 }}
               >
-                <AlertButton />
-                <LikeButton />
+                <AlertButton productId={productId} alerted={alerted} />
+                <LikeButton productId={productId} liked={liked} />
               </SnackbarContext.Provider>
             </Box>
             <Typography

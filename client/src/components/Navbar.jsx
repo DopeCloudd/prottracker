@@ -5,8 +5,8 @@ import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useGetUserDetailsQuery } from "../auth/auth.service";
-import { logout, setCredentials, setLoading } from "../auth/auth.slice";
+import { logout, setCredentials, setLoading } from "../redux//auth/auth.slice";
+import { useGetUserDetailsQuery } from "../redux/auth/auth.service";
 import SwitchLangage from "./SwitchLangage";
 
 function Navbar() {

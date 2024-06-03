@@ -19,7 +19,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import { registerUser } from "../auth/auth.actions";
+import { registerUser } from "../redux/auth/auth.actions";
 
 function Register() {
   const { loading, userInfo, error, success } = useSelector(

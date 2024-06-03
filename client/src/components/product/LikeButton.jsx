@@ -2,16 +2,25 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Box } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { useSelector } from "react-redux";
+import { SnackbarContext } from "../contexts/SnackbarContext";
 
 export default function LikeButton() {
+  const {
+    openSnackbarAlert,
+    setOpenSnackbarAlert,
+    openSnackbarLike,
+    setOpenSnackbarLike,
+  } = useContext(SnackbarContext);
   const { userInfo, loading } = useSelector((state) => state.auth);
-  const [open, setOpen] = useState(false);
 
   const handleClick = () => {
     if (!userInfo && !loading) {
-      setOpen(true);
+      if (openSnackbarAlert) {
+        setOpenSnackbarAlert(false);
+      }
+      setOpenSnackbarLike(true);
     }
   };
 
@@ -20,7 +29,7 @@ export default function LikeButton() {
       return;
     }
 
-    setOpen(false);
+    setOpenSnackbarLike(false);
   };
 
   return (
@@ -42,7 +51,7 @@ export default function LikeButton() {
       />
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={open}
+        open={openSnackbarLike}
         autoHideDuration={5000}
         onClose={handleClose}
       >

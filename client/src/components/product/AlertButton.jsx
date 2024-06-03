@@ -2,11 +2,13 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { Box } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
-import React, { useContext } from "react";
-import { useSelector } from "react-redux";
+import React, { useContext, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserProducts } from "../../redux/user/user_products.actions";
 import { SnackbarContext } from "../contexts/SnackbarContext";
 
 export default function AlertButton({ productId, alerted }) {
+  const dispatch = useDispatch();
   const {
     openSnackbarAlert,
     setOpenSnackbarAlert,
@@ -14,30 +16,61 @@ export default function AlertButton({ productId, alerted }) {
     setOpenSnackbarLike,
   } = useContext(SnackbarContext);
   const { userInfo, loading } = useSelector((state) => state.auth);
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("warning");
 
   const handleClick = () => {
+    if (openSnackbarLike) {
+      setOpenSnackbarLike(false);
+    }
     if (!userInfo && !loading) {
-      if (openSnackbarLike) {
-        setOpenSnackbarLike(false);
-      }
+      setMessage("Merci de vous connecter pour activer les notifications.");
+      setSeverity("warning");
       setOpenSnackbarAlert(true);
     } else if (userInfo && !loading) {
-      fetch("http://localhost:3032/user/alert", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: userInfo.id,
-          productId: productId,
-        }),
-      })
-        .then(async (response) => {
-          console.log(await response.json());
+      if (!alerted) {
+        fetch("http://localhost:3032/user/alert", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userInfo.id,
+            productId: productId,
+          }),
         })
-        .catch((error) => {
-          console.error("Erreur lors de la requête POST /user/like", error);
-        });
+          .then(async (response) => {
+            dispatch(fetchUserProducts(userInfo.id));
+            const data = await response.json();
+            setMessage(data.message);
+            setSeverity("success");
+            setOpenSnackbarAlert(true);
+          })
+          .catch((error) => {
+            console.error("Erreur lors de la requête POST /user/like", error);
+          });
+      } else {
+        fetch("http://localhost:3032/user/unalert", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userInfo.id,
+            productId: productId,
+          }),
+        })
+          .then(async (response) => {
+            dispatch(fetchUserProducts(userInfo.id));
+            const data = await response.json();
+            setMessage(data.message);
+            setSeverity("success");
+            setOpenSnackbarAlert(true);
+          })
+          .catch((error) => {
+            console.error("Erreur lors de la requête POST /user/unlike", error);
+          });
+      }
     }
   };
 
@@ -62,8 +95,8 @@ export default function AlertButton({ productId, alerted }) {
           borderColor: "#00A656",
           cursor: "pointer",
           fontSize: "40px",
-          // If the product is alerted, change the color to gold
-          fill: alerted ? "gold" : "white",
+          // If the product is alerted, change the color to #faaf00
+          fill: alerted ? "#faaf00" : "white",
           "&:hover": {
             fill: "gold",
           },
@@ -72,16 +105,16 @@ export default function AlertButton({ productId, alerted }) {
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={openSnackbarAlert}
-        autoHideDuration={5000}
+        autoHideDuration={3000}
         onClose={handleClose}
       >
         <Alert
           onClose={handleClose}
-          severity="warning"
+          severity={severity}
           variant="outlined"
           sx={{ width: "100%" }}
         >
-          Merci de vous connecter pour activer les notifications.
+          {message}
         </Alert>
       </Snackbar>
     </Box>

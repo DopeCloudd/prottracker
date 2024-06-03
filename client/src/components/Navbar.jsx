@@ -1,13 +1,15 @@
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { Avatar, Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout, setCredentials, setLoading } from "../redux//auth/auth.slice";
 import { useGetUserDetailsQuery } from "../redux/auth/auth.service";
+import { fetchUserProducts } from "../redux/user/user_products.actions";
 import SwitchLangage from "./SwitchLangage";
+import AvatarDropdown from "./navbar/AvatarDropdown";
 
 function Navbar() {
   const { t } = useTranslation();
@@ -24,6 +26,7 @@ function Navbar() {
   useEffect(() => {
     if (userToken && userDetailsQuery.data) {
       dispatch(setCredentials(userDetailsQuery.data));
+      dispatch(fetchUserProducts(userDetailsQuery.data.id));
     }
   }, [userToken, userDetailsQuery.data, dispatch]);
 
@@ -42,10 +45,6 @@ function Navbar() {
 
   const handleLogin = () => {
     navigate("/login");
-  };
-
-  const handleProfile = () => {
-    navigate("/profile");
   };
 
   return (
@@ -119,9 +118,11 @@ function Navbar() {
         {userInfo ? (
           <>
             <Box sx={{ mr: { xs: 2, md: 3 } }}>
-              <Avatar sx={{ cursor: "pointer" }} onClick={handleProfile}>
-                {userInfo.firstName ? userInfo.firstName.substring(0, 1) : ""}
-              </Avatar>
+              <AvatarDropdown
+                text={
+                  userInfo.firstName ? userInfo.firstName.substring(0, 1) : ""
+                }
+              />
             </Box>
             <Button variant="outlined" onClick={() => dispatch(logout())}>
               <LogoutIcon fontSize="small" sx={{ mr: { xs: 0, md: 1 } }} />

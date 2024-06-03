@@ -6,7 +6,7 @@ import React, { useContext } from "react";
 import { useSelector } from "react-redux";
 import { SnackbarContext } from "../contexts/SnackbarContext";
 
-export default function AlertButton() {
+export default function AlertButton({ productId, alerted }) {
   const {
     openSnackbarAlert,
     setOpenSnackbarAlert,
@@ -21,6 +21,23 @@ export default function AlertButton() {
         setOpenSnackbarLike(false);
       }
       setOpenSnackbarAlert(true);
+    } else if (userInfo && !loading) {
+      fetch("http://localhost:3032/user/alert", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: userInfo.id,
+          productId: productId,
+        }),
+      })
+        .then(async (response) => {
+          console.log(await response.json());
+        })
+        .catch((error) => {
+          console.error("Erreur lors de la requête POST /user/like", error);
+        });
     }
   };
 
@@ -45,6 +62,8 @@ export default function AlertButton() {
           borderColor: "#00A656",
           cursor: "pointer",
           fontSize: "40px",
+          // If the product is alerted, change the color to gold
+          fill: alerted ? "gold" : "white",
           "&:hover": {
             fill: "gold",
           },

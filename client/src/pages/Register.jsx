@@ -22,9 +22,7 @@ import * as yup from "yup";
 import { registerUser } from "../redux/auth/auth.actions";
 
 function Register() {
-  const { loading, userInfo, error, success } = useSelector(
-    (state) => state.auth
-  );
+  const { loading, userInfo, success } = useSelector((state) => state.auth);
   // Use dispatch
   const dispatch = useDispatch();
   // For translation

@@ -11,6 +11,7 @@ import Subscription from "./components/stripe/Subscription";
 import Success from "./components/stripe/Success";
 import Categories from "./pages/Categories";
 import Category from "./pages/Category";
+import Favorites from "./pages/Favorites";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
@@ -44,6 +45,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/profile" element={<Profile />} />
+            <Route path="/favorites" element={<Favorites />} />
             <Route path="/subscription/:productId" element={<Subscription />} />
             <Route path="/success" element={<Success />} />
           </Route>

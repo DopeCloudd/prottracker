@@ -31,7 +31,7 @@ function Login() {
       dispatch(fetchUserProducts(userInfo.id));
       navigate("/");
     }
-  }, [navigate, userInfo]);
+  }, [navigate, userInfo, dispatch]);
 
   const schema = yup
     .object({

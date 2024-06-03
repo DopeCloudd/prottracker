@@ -16,10 +16,11 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import { loginUser } from "../auth/auth.actions";
+import { loginUser } from "../redux/auth/auth.actions";
+import { fetchUserProducts } from "../redux/user/user_products.actions";
 
 function Login() {
-  const { loading, userInfo, error } = useSelector((state) => state.auth);
+  const { loading, userInfo } = useSelector((state) => state.auth);
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ function Login() {
   // redirect authenticated user to profile screen
   useEffect(() => {
     if (userInfo) {
+      dispatch(fetchUserProducts(userInfo.id));
       navigate("/");
     }
   }, [navigate, userInfo]);

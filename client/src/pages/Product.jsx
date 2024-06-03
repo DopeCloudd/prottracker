@@ -71,10 +71,14 @@ function Product() {
     // If productId is in the likedProducts array, set liked to true
     if (likedProducts.includes(parseInt(productId, 10))) {
       setLiked(true);
+    } else {
+      setLiked(false);
     }
     // If productId is in the alertedProducts array, set alerted to true
     if (alertedProducts.includes(parseInt(productId, 10))) {
       setAlerted(true);
+    } else {
+      setAlerted(false);
     }
   }, [likedProducts, alertedProducts, productId]);
 

@@ -6,7 +6,7 @@ import React, { useContext } from "react";
 import { useSelector } from "react-redux";
 import { SnackbarContext } from "../contexts/SnackbarContext";
 
-export default function LikeButton() {
+export default function LikeButton({ productId, liked }) {
   const {
     openSnackbarAlert,
     setOpenSnackbarAlert,
@@ -21,6 +21,23 @@ export default function LikeButton() {
         setOpenSnackbarAlert(false);
       }
       setOpenSnackbarLike(true);
+    } else if (userInfo && !loading) {
+      fetch("http://localhost:3032/user/like", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: userInfo.id,
+          productId: productId,
+        }),
+      })
+        .then(async (response) => {
+          console.log(await response.json());
+        })
+        .catch((error) => {
+          console.error("Erreur lors de la requête POST /user/like", error);
+        });
     }
   };
 
@@ -44,6 +61,8 @@ export default function LikeButton() {
           borderColor: "#00A656",
           cursor: "pointer",
           fontSize: "40px",
+          // If the product is liked, change the color to red
+          fill: liked ? "red" : "white",
           "&:hover": {
             fill: "red",
           },

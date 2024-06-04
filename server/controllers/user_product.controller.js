@@ -51,18 +51,13 @@ exports.getLikedProducts = async (req, res) => {
     const user = await db.user.findByPk(userId);
     // Get liked products
     const likedProducts = await user.getProducts({
-      attributes: ["id"],
       through: {
         attributes: ["productId"],
         where: { like: { [db.Sequelize.Op.ne]: null } },
       },
     });
-    // Map through the likedProducts to only return the productId
-    const productIds = likedProducts.map(
-      (product) => product.user_products.productId
-    );
     // Send the liked products
-    res.status(200).send(productIds);
+    res.status(200).send(likedProducts);
   } catch (error) {
     // Send an error response
     res.status(500).send({
@@ -121,18 +116,13 @@ exports.getAlertedProducts = async (req, res) => {
     const user = await db.user.findByPk(userId);
     // Get alerted products
     const alertedProducts = await user.getProducts({
-      attributes: ["id"],
       through: {
         attributes: ["productId"],
         where: { alert: { [db.Sequelize.Op.ne]: null } },
       },
     });
-    // Map through the alertedProducts to only return the productId
-    const productIds = alertedProducts.map(
-      (product) => product.user_products.productId
-    );
     // Send the alerted products
-    res.status(200).send(productIds);
+    res.status(200).send(alertedProducts);
   } catch (error) {
     // Send an error response
     res.status(500).send({

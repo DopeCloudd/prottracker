@@ -17,7 +17,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { loginUser } from "../redux/auth/auth.actions";
-import { fetchUserProducts } from "../redux/user/user_products.actions";
+import {
+  fetchUserProductsAlerted,
+  fetchUserProductsLiked,
+} from "../redux/user/user_products.actions";
 
 function Login() {
   const { loading, userInfo } = useSelector((state) => state.auth);
@@ -28,7 +31,8 @@ function Login() {
   // redirect authenticated user to profile screen
   useEffect(() => {
     if (userInfo) {
-      dispatch(fetchUserProducts(userInfo.id));
+      dispatch(fetchUserProductsLiked(userInfo.id));
+      dispatch(fetchUserProductsAlerted(userInfo.id));
       navigate("/");
     }
   }, [navigate, userInfo, dispatch]);

@@ -4,9 +4,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BackLink from "../components/BackLink";
-import Brand from "../components/filters/Brand";
-import Rate from "../components/filters/Rate";
-import Sort from "../components/filters/Sort";
+import FilterBox from "../components/filters/FilterBox";
 import BuyButton from "../components/product/BuyButton";
 import Price from "../components/product/Price";
 
@@ -103,21 +101,7 @@ function Category() {
       >
         {categoryName}
       </Typography>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "20px",
-          mt: 2,
-          mb: 2,
-        }}
-      >
-        <Brand list={brands} />
-        <Sort />
-        <Rate />
-      </Box>
+      <FilterBox brandList={brands} />
       <Box
         sx={{
           display: "grid",

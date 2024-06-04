@@ -1,7 +1,8 @@
 import { Box, Rating, Skeleton, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import FilterBox from "../components/filters/FilterBox";
 import BuyButton from "../components/product/BuyButton";
 import Price from "../components/product/Price";
 
@@ -17,6 +18,15 @@ export default function Alertes() {
   const { alertedProducts, loading } = useSelector(
     (state) => state.userProducts
   );
+  // State brandList
+  const [brandList, setBrandList] = useState([]);
+
+  // useEffect to get the brand list through the products
+  useEffect(() => {
+    const brands = alertedProducts.map((product) => product.brand);
+    const uniqueBrands = [...new Set(brands)];
+    setBrandList(uniqueBrands);
+  }, [alertedProducts]);
 
   // Add navigate
   const navigate = useNavigate();
@@ -53,6 +63,7 @@ export default function Alertes() {
           MES <span>ALERTES</span>
         </Typography>
       </Box>
+      <FilterBox brandList={brandList} />
       <Box
         sx={{
           display: "grid",

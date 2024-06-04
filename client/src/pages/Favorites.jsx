@@ -1,7 +1,8 @@
 import { Box, Rating, Skeleton, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import FilterBox from "../components/filters/FilterBox";
 import BuyButton from "../components/product/BuyButton";
 import Price from "../components/product/Price";
 
@@ -15,6 +16,15 @@ const convertirUint8ArrayEnUrl = (uint8Array) => {
 export default function Favorites() {
   // User liked products
   const { likedProducts, loading } = useSelector((state) => state.userProducts);
+  // State brandList
+  const [brandList, setBrandList] = React.useState([]);
+
+  // useEffect to get the brand list through the products
+  useEffect(() => {
+    const brands = likedProducts.map((product) => product.brand);
+    const uniqueBrands = [...new Set(brands)];
+    setBrandList(uniqueBrands);
+  }, [likedProducts]);
 
   // Add navigate
   const navigate = useNavigate();
@@ -51,6 +61,7 @@ export default function Favorites() {
           MES <span>FAVORIS</span>
         </Typography>
       </Box>
+      <FilterBox brandList={brandList} />
       <Box
         sx={{
           display: "grid",

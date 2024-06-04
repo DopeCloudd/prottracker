@@ -1,10 +1,14 @@
-import { Box, Rating, Skeleton } from "@mui/material";
+import { Box, Rating, Skeleton, Typography } from "@mui/material";
 import axios from "axios";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
+import BackLink from "../components/BackLink";
+import Brand from "../components/filters/Brand";
+import Rate from "../components/filters/Rate";
+import Sort from "../components/filters/Sort";
 
 const CardImage = styled.div`
   grid-area: 1 / 1 / 4 / 2;
@@ -98,8 +102,12 @@ const convertirUint8ArrayEnUrl = (uint8Array) => {
 function Category() {
   // State of products list
   const [produits, setProduits] = useState([]);
+  // State of brands list
+  const [brands, setBrands] = useState([]);
   // State of loading axios request
   const [loading, setLoading] = useState(true);
+  // State of category name
+  const [categoryName, setCategoryName] = useState("");
 
   // Translate
   const { t } = useTranslation();
@@ -120,6 +128,11 @@ function Category() {
         setProduits(
           response.data.sort((a, b) => a.currentPrice - b.currentPrice)
         );
+        // Set brands list
+        const newBrands = response.data
+          .map((produit) => produit.brand)
+          .filter((brand, index, array) => array.indexOf(brand) === index);
+        setBrands(newBrands);
         // End of loading axios request
         setLoading(false);
       } catch (error) {
@@ -128,8 +141,25 @@ function Category() {
         setLoading(false);
       }
     };
-
     fetchProduits();
+  }, [categoryId]);
+
+  useEffect(() => {
+    // Get category name
+    const fetchCategory = async () => {
+      try {
+        fetch(`http://localhost:3032/api/categories/${categoryId}`).then(
+          (response) => {
+            response.json().then((data) => {
+              setCategoryName(data.name);
+            });
+          }
+        );
+      } catch (error) {
+        console.error("Erreur lors de la récupération de la catégorie", error);
+      }
+    };
+    fetchCategory();
   }, [categoryId]);
 
   // Add navigate
@@ -137,10 +167,6 @@ function Category() {
   // Function that sends to the product file according to the product id
   const goToProduct = (productId) => {
     navigate(`/product/${productId}`);
-  };
-  // Function that sends to the list of all products in the category
-  const backPreviousPage = () => {
-    navigate(-1);
   };
   // Function that sends to merchant site url
   const goToUrl = (url) => {
@@ -154,29 +180,32 @@ function Category() {
         pb: 8,
       }}
     >
+      <BackLink />
+      <Typography
+        variant="h3"
+        sx={{
+          textAlign: "center",
+          fontFamily: "Integral, sans-serif",
+          texTransform: "uppercase",
+          fontSize: "clamp(1.625rem, -0.4063rem + 6.5vw, 3.25rem)",
+        }}
+      >
+        {categoryName}
+      </Typography>
       <Box
         sx={{
           display: "flex",
+          flexDirection: "row",
           justifyContent: "space-between",
-          paddingBottom: "16px",
+          alignItems: "center",
+          gap: "20px",
+          mt: 2,
+          mb: 2,
         }}
       >
-        <div></div>
-        <Box
-          component="p"
-          onClick={() => backPreviousPage()}
-          sx={{
-            width: "fit-content",
-            borderBottom: "1px solid",
-            opacity: "0.5",
-            cursor: "pointer",
-            "&::before": {
-              content: '"< "',
-            },
-          }}
-        >
-          {t("main.back")}
-        </Box>
+        <Brand list={brands} />
+        <Sort />
+        <Rate />
       </Box>
       <Box
         sx={{

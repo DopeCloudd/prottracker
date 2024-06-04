@@ -1,5 +1,6 @@
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import PersonIcon from "@mui/icons-material/Person";
 import { Box } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
@@ -38,6 +39,10 @@ export default function AvatarDropdown({ text }) {
     navigate("/favorites");
   };
 
+  const handleAlertes = () => {
+    navigate("/alertes");
+  };
+
   return (
     <Box>
       <Stack direction="row" spacing={1}>
@@ -72,6 +77,15 @@ export default function AvatarDropdown({ text }) {
                 <FavoriteIcon />
               </ListItemIcon>
               <ListItemText primary="Mes favoris" />
+            </ListItemButton>
+          </ListItem>
+          <Divider />
+          <ListItem disablePadding>
+            <ListItemButton onClick={handleAlertes}>
+              <ListItemIcon>
+                <NotificationsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Mes alertes" />
             </ListItemButton>
           </ListItem>
         </List>

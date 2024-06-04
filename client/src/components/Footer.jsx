@@ -158,10 +158,10 @@ export default function Footer() {
               Legal
             </Typography>
             <Link color="text.secondary" href="#">
-              Terms
+              Conditions d'utilisation
             </Link>
             <Link color="text.secondary" href="#">
-              Privacy
+              Confidentialité
             </Link>
             <Link color="text.secondary" href="#">
               Contact
@@ -180,13 +180,13 @@ export default function Footer() {
         >
           <div>
             <Link color="text.secondary" href="#">
-              Privacy Policy
+              Politique de Confidentialité
             </Link>
             <Typography display="inline" sx={{ mx: 0.5, opacity: 0.5 }}>
               &nbsp;•&nbsp;
             </Typography>
             <Link color="text.secondary" href="#">
-              Terms of Service
+              Conditions d'utilisation
             </Link>
             <Copyright />
           </div>

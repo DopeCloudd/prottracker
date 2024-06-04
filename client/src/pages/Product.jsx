@@ -69,13 +69,17 @@ function Product() {
 
   useEffect(() => {
     // If productId is in the likedProducts array, set liked to true
-    if (likedProducts.includes(parseInt(productId, 10))) {
+    if (
+      likedProducts.some((product) => product.id === parseInt(productId, 10))
+    ) {
       setLiked(true);
     } else {
       setLiked(false);
     }
     // If productId is in the alertedProducts array, set alerted to true
-    if (alertedProducts.includes(parseInt(productId, 10))) {
+    if (
+      alertedProducts.some((product) => product.id === parseInt(productId, 10))
+    ) {
       setAlerted(true);
     } else {
       setAlerted(false);
@@ -157,7 +161,7 @@ function Product() {
                 alignItems: "baseline",
               }}
             >
-              <Price value={product.currentPrice} />
+              <Price value={product.currentPrice} type="product" />
               <Typography
                 component="p"
                 sx={{
@@ -186,7 +190,7 @@ function Product() {
             >
               Prix le plus bas : {product.lowestPrice} €
             </Typography>
-            <BuyButton url={product.url} />
+            <BuyButton url={product.url} type="product" />
             <TitleSection text={"Analyse"} />
             <Typography
               component="p"

@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchUserProducts } from "./user_products.actions";
+import {
+  fetchUserProductsAlerted,
+  fetchUserProductsLiked,
+} from "./user_products.actions";
 
 const initialState = {
   loading: true,
@@ -15,15 +18,24 @@ const userProductsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUserProducts.pending, (state) => {
+      .addCase(fetchUserProductsAlerted.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchUserProducts.fulfilled, (state, { payload }) => {
+      .addCase(fetchUserProductsAlerted.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.likedProducts = payload.likedProducts;
-        state.alertedProducts = payload.alertedProducts;
+        state.alertedProducts = payload;
       })
-      .addCase(fetchUserProducts.rejected, (state) => {
+      .addCase(fetchUserProductsAlerted.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(fetchUserProductsLiked.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUserProductsLiked.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.likedProducts = payload;
+      })
+      .addCase(fetchUserProductsLiked.rejected, (state) => {
         state.loading = false;
       });
   },

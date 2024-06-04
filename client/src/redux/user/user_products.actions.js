@@ -2,8 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const API = "http://localhost:3032";
 
-export const fetchUserProducts = createAsyncThunk(
-  "userProducts/fetchUserProducts",
+export const fetchUserProductsLiked = createAsyncThunk(
+  "userProducts/fetchUserProductsLiked",
   async (userId, thunkAPI) => {
     try {
       const responseLike = await fetch(`${API}/user/liked/${userId}`, {
@@ -12,15 +12,26 @@ export const fetchUserProducts = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-      const responseAlert = await fetch(`${API}/user/alerted/${userId}`, {
+      const dataLike = await responseLike.json();
+      return dataLike;
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+);
+
+export const fetchUserProductsAlerted = createAsyncThunk(
+  "userProducts/fetchUserProductsAlerted",
+  async (userId, thunkAPI) => {
+    try {
+      const responseAlerted = await fetch(`${API}/user/alerted/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
-      const dataLike = await responseLike.json();
-      const dataAlert = await responseAlert.json();
-      return { likedProducts: dataLike, alertedProducts: dataAlert };
+      const dataAlerted = await responseAlerted.json();
+      return dataAlerted;
     } catch (error) {
       console.log("error", error);
     }

@@ -7,7 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout, setCredentials, setLoading } from "../redux//auth/auth.slice";
 import { useGetUserDetailsQuery } from "../redux/auth/auth.service";
-import { fetchUserProducts } from "../redux/user/user_products.actions";
+import {
+  fetchUserProductsAlerted,
+  fetchUserProductsLiked,
+} from "../redux/user/user_products.actions";
 import SwitchLangage from "./SwitchLangage";
 import AvatarDropdown from "./navbar/AvatarDropdown";
 
@@ -26,7 +29,8 @@ function Navbar() {
   useEffect(() => {
     if (userToken && userDetailsQuery.data) {
       dispatch(setCredentials(userDetailsQuery.data));
-      dispatch(fetchUserProducts(userDetailsQuery.data.id));
+      dispatch(fetchUserProductsLiked(userDetailsQuery.data.id));
+      dispatch(fetchUserProductsAlerted(userDetailsQuery.data.id));
     }
   }, [userToken, userDetailsQuery.data, dispatch]);
 

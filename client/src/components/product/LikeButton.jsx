@@ -4,7 +4,7 @@ import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import React, { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserProducts } from "../../redux/user/user_products.actions";
+import { fetchUserProductsLiked } from "../../redux/user/user_products.actions";
 import { SnackbarContext } from "../contexts/SnackbarContext";
 
 export default function LikeButton({ productId, liked }) {
@@ -20,6 +20,7 @@ export default function LikeButton({ productId, liked }) {
   const [severity, setSeverity] = useState("warning");
 
   const handleClick = () => {
+    setOpenSnackbarLike(false);
     if (openSnackbarAlert) {
       setOpenSnackbarAlert(false);
     }
@@ -40,7 +41,7 @@ export default function LikeButton({ productId, liked }) {
           }),
         })
           .then(async (response) => {
-            dispatch(fetchUserProducts(userInfo.id));
+            dispatch(fetchUserProductsLiked(userInfo.id));
             const data = await response.json();
             setMessage(data.message);
             setSeverity("success");
@@ -61,7 +62,7 @@ export default function LikeButton({ productId, liked }) {
           }),
         })
           .then(async (response) => {
-            dispatch(fetchUserProducts(userInfo.id));
+            dispatch(fetchUserProductsLiked(userInfo.id));
             const data = await response.json();
             setMessage(data.message);
             setSeverity("success");

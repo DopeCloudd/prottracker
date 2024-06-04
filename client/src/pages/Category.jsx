@@ -2,95 +2,13 @@ import { Box, Rating, Skeleton, Typography } from "@mui/material";
 import axios from "axios";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import styled from "styled-components";
 import BackLink from "../components/BackLink";
 import Brand from "../components/filters/Brand";
 import Rate from "../components/filters/Rate";
 import Sort from "../components/filters/Sort";
-
-const CardImage = styled.div`
-  grid-area: 1 / 1 / 4 / 2;
-  position: relative;
-
-  @media (max-width: 600px) {
-    grid-area: 1 / 1 / 2 / 2;
-  }
-
-  & img {
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 100%;
-    aspect-ratio: 4/4;
-  }
-`;
-
-const TextLowOpacity = styled.p`
-  opacity: 0.5;
-`;
-
-const CardTopContainer = styled.div`
-  grid-area: 1 / 2 / 2 / 6;
-
-  @media (max-width: 600px) {
-    margin-left: 8px;
-  }
-
-  & h3 {
-    line-height: normal;
-    text-transform: uppercase;
-  }
-
-  & h4 {
-    color: #e00034;
-  }
-`;
-
-const CardMiddleContainer = styled.div`
-  grid-area: 2 / 2 / 3 / 6;
-  display: flex;
-  align-items: center;
-
-  @media (max-width: 600px) {
-    grid-area: 2 / 1 / 3 / 6;
-  }
-`;
-
-const CardBottomContainer = styled.div`
-  grid-area: 3 / 2 / 4 / 6;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  @media (max-width: 600px) {
-    grid-area: 3 / 1 / 4 / 6;
-  }
-`;
-
-const BuyButton = styled.button`
-  width: 40%;
-  background-color: #00a656;
-  color: white;
-  padding: 12px;
-  border-radius: 18px;
-  outline: none;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-`;
-
-// Format the number in euros
-const Prix = ({ prix }) => {
-  const prixFormate = prix.toLocaleString("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-    minimumFractionDigits: 2,
-  });
-
-  return <h4>{prixFormate}</h4>;
-};
+import BuyButton from "../components/product/BuyButton";
+import Price from "../components/product/Price";
 
 // Function to convert Uint8Array to image URL
 const convertirUint8ArrayEnUrl = (uint8Array) => {
@@ -108,9 +26,6 @@ function Category() {
   const [loading, setLoading] = useState(true);
   // State of category name
   const [categoryName, setCategoryName] = useState("");
-
-  // Translate
-  const { t } = useTranslation();
 
   // Retrieve the categoryId parameter from the page URL
   const { categoryId } = useParams();
@@ -167,10 +82,6 @@ function Category() {
   // Function that sends to the product file according to the product id
   const goToProduct = (productId) => {
     navigate(`/product/${productId}`);
-  };
-  // Function that sends to merchant site url
-  const goToUrl = (url) => {
-    window.open(url, "_blank");
   };
 
   return (
@@ -237,15 +148,44 @@ function Category() {
                 padding: "8px",
               }}
             >
-              <CardImage>
+              <Box
+                sx={{
+                  gridArea: "1 / 1 / 4 / 2",
+                  position: "relative",
+                  "@media (max-width: 600px)": {
+                    gridArea: "1 / 1 / 2 / 2",
+                  },
+                  "& img": {
+                    width: "auto",
+                    height: "auto",
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    aspectRatio: "4/4",
+                  },
+                }}
+              >
                 <Skeleton
                   variant="rectangular"
                   width={"100%"}
                   height={"100%"}
                   sx={{ bgcolor: "rgba(255, 255, 255, 0.13)" }}
                 />
-              </CardImage>
-              <CardTopContainer>
+              </Box>
+              <Box
+                sx={{
+                  gridArea: "1 / 2 / 2 / 6",
+                  "@media (max-width: 600px)": {
+                    marginLeft: "8px",
+                  },
+                  "& h3": {
+                    lineHeight: "normal",
+                    textTransform: "uppercase",
+                  },
+                  "& h4": {
+                    color: "#e00034",
+                  },
+                }}
+              >
                 <Skeleton
                   variant="h3"
                   width={"100%"}
@@ -261,16 +201,36 @@ function Category() {
                   width={"40%"}
                   sx={{ bgcolor: "rgba(255, 255, 255, 0.13)" }}
                 />
-              </CardTopContainer>
-              <CardMiddleContainer>
+              </Box>
+              <Box
+                sx={{
+                  gridArea: "2 / 2 / 3 / 6",
+                  display: "flex",
+                  alignItems: "center",
+                  "@media (max-width: 600px)": {
+                    gridArea: "2 / 1 / 3 / 6",
+                  },
+                }}
+              >
                 <Skeleton
                   variant="rectangular"
                   width={"100%"}
                   height={"100%"}
                   sx={{ bgcolor: "rgba(255, 255, 255, 0.13)" }}
                 />
-              </CardMiddleContainer>
-              <CardBottomContainer>
+              </Box>
+              <Box
+                sx={{
+                  gridArea: "3 / 2 / 4 / 6",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+
+                  "@media (max-width: 600px)": {
+                    gridArea: "3 / 1 / 4 / 6",
+                  },
+                }}
+              >
                 <Box
                   sx={{
                     width: "100%",
@@ -293,7 +253,7 @@ function Category() {
                     sx={{ bgcolor: "rgba(255, 255, 255, 0.13)" }}
                   />
                 </Box>
-              </CardBottomContainer>
+              </Box>
             </Box>
           ))
         ) : produits.length === 0 ? (
@@ -332,48 +292,112 @@ function Category() {
                   padding: "8px",
                 }}
               >
-                <CardImage>
+                <Box
+                  sx={{
+                    gridArea: "1 / 1 / 4 / 2",
+                    position: "relative",
+                    "@media (max-width: 600px)": {
+                      gridArea: "1 / 1 / 2 / 2",
+                    },
+                    "& img": {
+                      width: "auto",
+                      height: "auto",
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      aspectRatio: "4/4",
+                    },
+                  }}
+                >
                   <img
                     src={convertirUint8ArrayEnUrl(
                       new Uint8Array(produit.image.data)
                     )}
                     alt={`${produit.title}`}
                   />
-                </CardImage>
-                <CardTopContainer>
+                </Box>
+                <Box
+                  sx={{
+                    gridArea: "1 / 2 / 2 / 6",
+                    "@media (max-width: 600px)": {
+                      marginLeft: "8px",
+                    },
+                    "& h3": {
+                      lineHeight: "normal",
+                      textTransform: "uppercase",
+                    },
+                    "& h4": {
+                      color: "#e00034",
+                    },
+                  }}
+                >
                   <h3>{produit.title}</h3>
-                  <TextLowOpacity>{produit.brand}</TextLowOpacity>
+                  <Typography
+                    component="p"
+                    sx={{
+                      fontSize: "1rem",
+                      opacity: "0.5",
+                    }}
+                  >
+                    {produit.brand}
+                  </Typography>
                   <Box
                     sx={{
                       display: "flex",
                     }}
                   >
-                    <Prix prix={produit.currentPrice} />
+                    <Price value={produit.currentPrice} type="card" />
                     <span>&nbsp;·&nbsp;</span>
-                    <TextLowOpacity>{produit.quantity}</TextLowOpacity>
+                    <Typography
+                      component="p"
+                      sx={{
+                        fontSize: "1rem",
+                        opacity: "0.5",
+                      }}
+                    >
+                      {produit.quantity}
+                    </Typography>
                   </Box>
-                </CardTopContainer>
-                <CardMiddleContainer>
-                  <TextLowOpacity>
+                </Box>
+                <Box
+                  sx={{
+                    gridArea: "2 / 2 / 3 / 6",
+                    display: "flex",
+                    alignItems: "center",
+                    "@media (max-width: 600px)": {
+                      gridArea: "2 / 1 / 3 / 6",
+                    },
+                  }}
+                >
+                  <Typography
+                    component="p"
+                    sx={{
+                      fontSize: "1rem",
+                      opacity: "0.5",
+                    }}
+                  >
                     {produit.description.substring(0, 120)}...
-                  </TextLowOpacity>
-                </CardMiddleContainer>
-                <CardBottomContainer>
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    gridArea: "3 / 2 / 4 / 6",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+
+                    "@media (max-width: 600px)": {
+                      gridArea: "3 / 1 / 4 / 6",
+                    },
+                  }}
+                >
                   <Rating
                     name="read-only"
                     value={4.5}
                     precision={0.5}
                     readOnly
                   />
-                  <BuyButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      goToUrl(produit.url);
-                    }}
-                  >
-                    {t("product.button")}
-                  </BuyButton>
-                </CardBottomContainer>
+                  <BuyButton url={produit.url} type="card" />
+                </Box>
               </Box>
             ))}
           </>

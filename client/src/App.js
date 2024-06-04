@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import ProtectedRoute from "./components/routing/ProtectedRoute";
 import Subscription from "./components/stripe/Subscription";
 import Success from "./components/stripe/Success";
+import Alertes from "./pages/Alertes";
 import Categories from "./pages/Categories";
 import Category from "./pages/Category";
 import Favorites from "./pages/Favorites";
@@ -46,6 +47,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/profile" element={<Profile />} />
             <Route path="/favorites" element={<Favorites />} />
+            <Route path="/alertes" element={<Alertes />} />
             <Route path="/subscription/:productId" element={<Subscription />} />
             <Route path="/success" element={<Success />} />
           </Route>

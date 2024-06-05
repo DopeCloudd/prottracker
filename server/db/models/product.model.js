@@ -37,6 +37,10 @@ module.exports = (sequelize, Sequelize) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    rating: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+    },
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
@@ -49,6 +53,14 @@ module.exports = (sequelize, Sequelize) => {
       type: DataTypes.INTEGER,
     },
   });
+
+  Product.associate = (models) => {
+    Product.belongsToMany(models.User, {
+      through: models.UserProducts,
+      foreignKey: "productId",
+      as: "Users",
+    });
+  };
 
   return Product;
 };

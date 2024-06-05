@@ -47,7 +47,11 @@ export default function AvatarDropdown({ text }) {
     <Box>
       <Stack direction="row" spacing={1}>
         <Button aria-describedby={id} onClick={handleAvatarClick}>
-          <Avatar>{text}</Avatar>
+          <Avatar
+            sx={{ width: { xs: 30, md: 40 }, height: { xs: 30, md: 40 } }}
+          >
+            {text}
+          </Avatar>
           <KeyboardArrowDownIcon />
         </Button>
       </Stack>

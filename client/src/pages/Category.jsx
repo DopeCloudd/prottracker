@@ -4,7 +4,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BackLink from "../components/BackLink";
-import FilterBox from "../components/filters/FilterBox";
+import DisplayFilters from "../components/filters/DisplayFilters";
 import BuyButton from "../components/product/BuyButton";
 import Price from "../components/product/Price";
 
@@ -24,6 +24,11 @@ function Category() {
   const [loading, setLoading] = useState(true);
   // State of category name
   const [categoryName, setCategoryName] = useState("");
+  // State of filters
+  const [filters, setFilters] = useState({
+    sort: "",
+    brand: "",
+  });
 
   // Retrieve the categoryId parameter from the page URL
   const { categoryId } = useParams();
@@ -82,6 +87,28 @@ function Category() {
     navigate(`/product/${productId}`);
   };
 
+  const filterAndSortProducts = () => {
+    let filteredProducts = produits.filter((product) => {
+      const matchesBrand = filters.brand
+        ? product.brand.toLowerCase().includes(filters.brand.toLowerCase())
+        : true;
+      return matchesBrand;
+    });
+
+    switch (filters.sort) {
+      case "Ascending Price":
+        return filteredProducts.sort((a, b) => a.currentPrice - b.currentPrice);
+      case "Descending Price":
+        return filteredProducts.sort((a, b) => b.currentPrice - a.currentPrice);
+      case "Ascending Rate":
+        return filteredProducts.sort((a, b) => a.rating - b.rating);
+      case "Descending Rate":
+        return filteredProducts.sort((a, b) => b.rating - a.rating);
+      default:
+        return filteredProducts;
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -101,7 +128,11 @@ function Category() {
       >
         {categoryName}
       </Typography>
-      <FilterBox brandList={brands} />
+      <DisplayFilters
+        brandList={brands}
+        filters={filters}
+        setFilters={setFilters}
+      />
       <Box
         sx={{
           display: "grid",
@@ -257,7 +288,7 @@ function Category() {
         ) : (
           // Display product list once loaded
           <>
-            {produits.map((produit) => (
+            {filterAndSortProducts().map((produit) => (
               <Box
                 key={produit.id}
                 onClick={() => goToProduct(produit.id)}
@@ -376,8 +407,8 @@ function Category() {
                 >
                   <Rating
                     name="read-only"
-                    value={4.5}
-                    precision={0.5}
+                    value={produit.rating || 4}
+                    precision={0.1}
                     readOnly
                   />
                   <BuyButton url={produit.url} type="card" />

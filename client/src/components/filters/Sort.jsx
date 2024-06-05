@@ -1,25 +1,28 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 
-export default function Sort() {
-  const [priceSort, setPriceSort] = useState("");
-
-  const handleChange = (event) => {
-    setPriceSort(event.target.value);
+export default function Sort({ filters, setFilters }) {
+  const handlePriceChange = (e) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      sort: e.target.value,
+    }));
   };
 
   return (
     <FormControl fullWidth>
-      <InputLabel id="price-select-label">Prix</InputLabel>
+      <InputLabel id="sort-select-label">Trier par</InputLabel>
       <Select
-        labelId="price-select-label"
-        id="price-select"
-        value={priceSort}
-        label="Prix"
-        onChange={handleChange}
+        labelId="sort-select-label"
+        id="sort-select"
+        value={filters.sort || ""}
+        label="Trier par"
+        onChange={handlePriceChange}
       >
-        <MenuItem value="asc">Prix croissant</MenuItem>
-        <MenuItem value="desc">Prix décroissant</MenuItem>
+        <MenuItem value="Ascending Price">Prix le moins élevé</MenuItem>
+        <MenuItem value="Descending Price">Prix le plus élevé</MenuItem>
+        <MenuItem value="Ascending Rate">Score le moins élevé</MenuItem>
+        <MenuItem value="Descending Rate">Score le plus élevé</MenuItem>
       </Select>
     </FormControl>
   );

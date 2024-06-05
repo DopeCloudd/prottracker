@@ -1,11 +1,12 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 
-export default function Brand({ list }) {
-  const [brand, setBrand] = useState("");
-
-  const handleChange = (event) => {
-    setBrand(event.target.value);
+export default function Brand({ list, filters, setFilters }) {
+  const handleBrandChange = (e) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      brand: e.target.value,
+    }));
   };
 
   if (list.length === 0) {
@@ -18,9 +19,9 @@ export default function Brand({ list }) {
       <Select
         labelId="brands-select-label"
         id="brands-select"
-        value={brand}
+        value={filters.brand || ""}
         label="Marque"
-        onChange={handleChange}
+        onChange={handleBrandChange}
       >
         {list.map((brand) => (
           <MenuItem key={brand} value={brand}>

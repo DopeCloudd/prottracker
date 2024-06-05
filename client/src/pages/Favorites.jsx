@@ -1,8 +1,8 @@
 import { Box, Rating, Skeleton, Typography } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import FilterBox from "../components/filters/FilterBox";
+import DisplayFilters from "../components/filters/DisplayFilters";
 import BuyButton from "../components/product/BuyButton";
 import Price from "../components/product/Price";
 
@@ -17,7 +17,12 @@ export default function Favorites() {
   // User liked products
   const { likedProducts, loading } = useSelector((state) => state.userProducts);
   // State brandList
-  const [brandList, setBrandList] = React.useState([]);
+  const [brandList, setBrandList] = useState([]);
+  // State of filters
+  const [filters, setFilters] = useState({
+    sort: "",
+    brand: "",
+  });
 
   // useEffect to get the brand list through the products
   useEffect(() => {
@@ -32,6 +37,28 @@ export default function Favorites() {
   // Function that sends to the product file according to the product id
   const goToProduct = (productId) => {
     navigate(`/product/${productId}`);
+  };
+
+  const filterAndSortProducts = () => {
+    let filteredProducts = likedProducts.filter((product) => {
+      const matchesBrand = filters.brand
+        ? product.brand.toLowerCase().includes(filters.brand.toLowerCase())
+        : true;
+      return matchesBrand;
+    });
+
+    switch (filters.sort) {
+      case "Ascending Price":
+        return filteredProducts.sort((a, b) => a.currentPrice - b.currentPrice);
+      case "Descending Price":
+        return filteredProducts.sort((a, b) => b.currentPrice - a.currentPrice);
+      case "Ascending Rate":
+        return filteredProducts.sort((a, b) => a.rating - b.rating);
+      case "Descending Rate":
+        return filteredProducts.sort((a, b) => b.rating - a.rating);
+      default:
+        return filteredProducts;
+    }
   };
 
   return (
@@ -61,7 +88,11 @@ export default function Favorites() {
           MES <span>FAVORIS</span>
         </Typography>
       </Box>
-      <FilterBox brandList={brandList} />
+      <DisplayFilters
+        brandList={brandList}
+        filters={filters}
+        setFilters={setFilters}
+      />
       <Box
         sx={{
           display: "grid",
@@ -203,7 +234,7 @@ export default function Favorites() {
         ) : (
           // Display products list
           <>
-            {likedProducts.map((produit) => (
+            {filterAndSortProducts().map((produit) => (
               <Box
                 key={produit.id}
                 onClick={() => goToProduct(produit.id)}

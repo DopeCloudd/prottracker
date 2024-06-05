@@ -1,15 +1,15 @@
 import { Box } from "@mui/system";
 import React from "react";
 import Brand from "./Brand";
-import Rate from "./Rate";
+import Reset from "./Reset";
 import Sort from "./Sort";
 
-export default function FilterBox({ brandList }) {
+export default function FilterBox({ brandList, filters, setFilters }) {
   return (
     <Box
       sx={{
         display: "flex",
-        flexDirection: "row",
+        flexDirection: { xs: "column", md: "row" },
         justifyContent: "space-between",
         alignItems: "center",
         gap: "20px",
@@ -17,9 +17,9 @@ export default function FilterBox({ brandList }) {
         mb: 2,
       }}
     >
-      <Brand list={brandList} />
-      <Sort />
-      <Rate />
+      <Brand list={brandList} filters={filters} setFilters={setFilters} />
+      <Sort filters={filters} setFilters={setFilters} />
+      <Reset setFilters={setFilters} />
     </Box>
   );
 }

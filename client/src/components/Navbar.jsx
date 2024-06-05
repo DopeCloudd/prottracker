@@ -121,7 +121,7 @@ function Navbar() {
         <SwitchLangage />
         {userInfo ? (
           <>
-            <Box sx={{ mr: { xs: 2, md: 3 } }}>
+            <Box sx={{ mr: { xs: 1, md: 3 } }}>
               <AvatarDropdown
                 text={
                   userInfo.firstName ? userInfo.firstName.substring(0, 1) : ""

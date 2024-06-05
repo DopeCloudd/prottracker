@@ -12,10 +12,12 @@ import Success from "./components/stripe/Success";
 import Alertes from "./pages/Alertes";
 import Categories from "./pages/Categories";
 import Category from "./pages/Category";
+import Conditions from "./pages/Conditions";
 import Favorites from "./pages/Favorites";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import Privacy from "./pages/Privacy";
 import Product from "./pages/Product";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
@@ -51,6 +53,8 @@ function App() {
             <Route path="/subscription/:productId" element={<Subscription />} />
             <Route path="/success" element={<Success />} />
           </Route>
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/conditions" element={<Conditions />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Box>

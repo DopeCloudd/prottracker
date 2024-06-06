@@ -21,6 +21,7 @@ import Privacy from "./pages/Privacy";
 import Product from "./pages/Product";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
+import Verification from "./pages/Verification";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
           <Route path="/product/:productId" element={<Product />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verification/:token" element={<Verification />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/profile" element={<Profile />} />
             <Route path="/favorites" element={<Favorites />} />

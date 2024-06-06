@@ -68,12 +68,16 @@ function Register() {
     // redirect user to login page if registration was successful
     if (success) navigate("/login");
     // redirect authenticated user to profile screen
-    if (userInfo) navigate("/user-profile");
+    if (userInfo) navigate("/profile");
   }, [navigate, userInfo, success]);
 
   // Function to be executed on form submission
   const onSubmit = (data) => {
-    dispatch(registerUser(data));
+    const name = data.lastName;
+    const firstName = data.firstName;
+    const email = data.email;
+    const password = data.password;
+    dispatch(registerUser({ name, firstName, email, password }));
   };
 
   // Go to login page

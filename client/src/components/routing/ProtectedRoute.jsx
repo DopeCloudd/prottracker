@@ -4,14 +4,14 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 const ProtectedRoute = () => {
   const navigate = useNavigate();
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo, loading } = useSelector((state) => state.auth);
 
   const handleButtonClick = () => {
     navigate("/login");
   };
 
   // show unauthorized screen if no user is found in redux store
-  if (!userInfo) {
+  if (!userInfo && !loading) {
     return (
       <Container
         sx={{

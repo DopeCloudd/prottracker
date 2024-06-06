@@ -41,7 +41,7 @@ function App() {
         }}
       >
         <Routes>
-          <Route path="/" exact element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/category/:categoryId" element={<Category />} />
           <Route path="/product/:productId" element={<Product />} />

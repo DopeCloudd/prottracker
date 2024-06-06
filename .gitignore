@@ -47,3 +47,4 @@ server/.eslintcache
 client/.eslintcache
 server/scraping/test.js
 server/scraping/images/
+server/.DS_Store
